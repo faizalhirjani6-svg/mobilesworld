@@ -155,6 +155,23 @@
 @keyframes shimmer { 0%{opacity:.5} 50%{opacity:1} 100%{opacity:.5} }
 .skeleton { background: var(--color-muted); animation: shimmer 1.4s ease-in-out infinite; }
 
+.stage3d.hero-phone-background {
+  position: absolute; inset: 0; height: 100%; min-height: 0; z-index: -1;
+  pointer-events: none; opacity: .6;
+}
+.hero-phone-background .stage3d-track { left: 72%; top: 42%; }
+.hero-phone-background .stage3d-grid { opacity: .35; }
+.hero-phone-background .stage3d-orbit { display: none; }
+.hero-phone-background .p3-shadow { left: 72%; top: 42%; }
+.hero-phone-background::before {
+  content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none;
+  background: linear-gradient(to bottom, transparent 15%, color-mix(in oklab, var(--color-background) 30%, transparent) 45%, color-mix(in oklab, var(--color-background) 85%, transparent) 100%);
+}
+@media (max-width: 640px) {
+  .hero-phone-background .stage3d-track { left: 58%; top: 28%; }
+  .hero-phone-background .p3-shadow { left: 58%; top: 28%; }
+  .hero-phone-background { opacity: .5; }
+}
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; transition: none; }
   .ticker { animation: none; }

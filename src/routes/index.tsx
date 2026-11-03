@@ -3,9 +3,7 @@ import phoneBack from "@/assets/phone-back.png";
 import type { CSSProperties } from "react";
 import type { ReactNode } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Header, Footer, Reveal, Photo, ScrollProgress, Parallax, GlideLink } from "@/components/site";
-import bench from "@/assets/shop-bench-real.jpg";
-import counter from "@/assets/shop-counter-real.jpg";
+import { Header, Footer, Reveal, Photo, ScrollProgress, GlideLink } from "@/components/site";
 import repairClose from "@/assets/repair-bench.jpg";
 import screen from "@/assets/screen-swap.jpg";
 import earbuds from "@/assets/earbuds-hand-real.jpg";
@@ -97,15 +95,33 @@ function Index() {
       <Header />
 
 
-      {/* Hero: full-bleed photo with type over it */}
+      {/* Opening text over the decorative phone animation */}
       <section className="relative isolate min-h-[88vh] overflow-hidden">
-        <div className="absolute inset-0 -z-10 opacity-45">
-          <Parallax speed={0.25}>
-            <img src={bench} alt="" width={1280} height={960} className="h-[100vh] w-full object-cover" />
-          </Parallax>
-        </div>
-        <div className="absolute inset-0 -z-10 bg-background/55" />
-        <div className="mx-auto flex min-h-[88vh] max-w-6xl flex-col justify-end px-5 pb-16">
+      <div aria-hidden="true" className="stage3d hero-phone-background">
+        <div className="stage3d-grid" />
+        <div className="p3-shadow" />
+        <div className="stage3d-track"><div className="p3-lift">
+          <div className="phone3d">
+            <div className="p3-slice" style={{ "--z": "-4px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "-3px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "-2px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "-1px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "0px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "1px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "2px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "3px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "4px" } as CSSProperties} />
+            <div className="p3-board"><span className="p3-chip" /><span className="p3-batt" /><span className="p3-camera" /><span className="p3-connector" /></div>
+            <div className="p3-front">
+              <img src={phoneFront} alt="" width={576} height={1168} />
+              <div className="p3-wall">
+                <div className="p3-mark" aria-hidden="true">
+                  <div className="p3-emblem"><span>MW</span><i /></div>
+                  <div className="p3-wordmark"><span>MOBILE</span><span>WORLD</span></div>
+                  <div className="p3-mark-line" />
+                </div>
+              </div>
+              <span className="p3-glare" />
+            </div>
+            <div className="p3-back"><img src={phoneBack} alt="" width={576} height={1168} /></div>
+          </div>
+          <div className="p3-halo"><span /><span /></div>
+        </div></div>
+        <div className="stage3d-orbit"><span /><span /><span /></div>
+      </div>
+        <div className="relative z-10 mx-auto flex min-h-[88vh] max-w-6xl flex-col justify-end px-5 pb-16">
           <Reveal>
             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-primary">Repairs and audio</p>
           </Reveal>
@@ -162,34 +178,6 @@ function Index() {
         </div>
       </section>
 
-      {/* Always-on 3D stage: a phone tumbles and slides around the space */}
-      <section aria-hidden="true" className="stage3d">
-        <div className="stage3d-grid" />
-        <div className="p3-shadow" />
-        <div className="stage3d-track"><div className="p3-lift">
-          <div className="phone3d">
-            <div className="p3-slice" style={{ "--z": "-4px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "-3px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "-2px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "-1px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "0px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "1px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "2px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "3px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "4px" } as CSSProperties} />
-            <div className="p3-board"><span className="p3-chip" /><span className="p3-batt" /><span className="p3-camera" /><span className="p3-connector" /></div>
-            <div className="p3-front">
-              <img src={phoneFront} alt="" width={576} height={1168} />
-              <div className="p3-wall">
-                <div className="p3-mark" aria-hidden="true">
-                  <div className="p3-emblem"><span>MW</span><i /></div>
-                  <div className="p3-wordmark"><span>MOBILE</span><span>WORLD</span></div>
-                  <div className="p3-mark-line" />
-                </div>
-              </div>
-              <span className="p3-glare" />
-            </div>
-            <div className="p3-back"><img src={phoneBack} alt="" width={576} height={1168} /></div>
-          </div>
-          <div className="p3-halo"><span /><span /></div>
-        </div></div>
-        <div className="stage3d-orbit"><span /><span /><span /></div>
-      </section>
-
-
-
       {/* Shop: everything in stock, laid out so it all shows */}
       <section id="audio" className="py-24">
         <div className="mx-auto max-w-6xl px-5">
@@ -236,7 +224,6 @@ function Index() {
         </div>
         <div className="snap-strip mt-12 flex gap-6 overflow-x-auto px-5 pb-4 md:px-10">
           {[
-            [counter, "Accessories counter stocked with earbuds and earphones", 1280, 960, "The counter"],
             [repairClose, "Battery replacement in progress", 1024, 1280, "Battery swap"],
             [screen, "Cracked screen next to its replacement panel", 1280, 896, "Screen ready to fit"],
           ].map(([src, alt, , , cap], i) => (
