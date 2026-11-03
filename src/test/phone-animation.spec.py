@@ -56,7 +56,7 @@ async def check_sequence():
                 angle = 2 * math.pi * time / 8000
                 assert abs(sample['x'] - radius * math.sin(angle)) < .02, f'Orbit circle mismatch: {width} {time} {sample["x"]} expected {radius * math.sin(angle)}'
                 assert abs(sample['depth'] - (radius * (math.cos(angle) - 1) - 45)) < .02, 'Orbit must stay only slightly farther back'
-                assert sample['y'] == 0, 'Phone must tumble rather than move up and down'
+                assert sample['y'] == 0, f"Unexpected vertical movement: {time} {sample}"
                 step = (sample['yaw'] - previous_yaw) % 360
                 assert 10 < step < 13, 'Rotation must advance smoothly without pauses'
                 previous_yaw = sample['yaw']
