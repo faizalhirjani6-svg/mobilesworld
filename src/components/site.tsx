@@ -203,7 +203,7 @@ export function Header() {
   return (
     <header className={`site-header sticky top-0 z-40 border-b bg-background ${hidden ? "is-hidden" : ""}`}>
       <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
-        <div className="flex min-w-0 items-center gap-2 sm:gap-4">
+        <div className="flex min-w-0 flex-wrap items-center gap-2 sm:gap-4">
           <Link
             to="/"
             data-header-logo
@@ -226,7 +226,7 @@ export function Header() {
               activeProps={{ className: "nav-link is-active" }}
               inactiveProps={{ className: "nav-link" }}
             >
-              Privacy
+              Privacy&Policy
             </Link>
           </nav>
         </div>
@@ -266,7 +266,7 @@ export function Footer() {
             inactiveProps={{ className: "nav-foot" }}
             activeProps={{ className: "nav-foot is-active" }}
           >
-            Privacy Policy
+            Privacy&Policy
           </Link>
         </div>
       </div>
@@ -281,7 +281,7 @@ export function LegalPage({ title, children }: { title: string; children: ReactN
       <Header />
       <main className="mx-auto max-w-3xl px-5 py-16">
         <Reveal dir="up">
-          <h1 className="text-3xl font-bold sm:text-5xl">{title}</h1>
+          <h1 className="break-words text-3xl font-bold sm:text-5xl">{title}</h1>
           <p className="mt-3 text-sm text-muted-foreground">Last updated: November 2026</p>
         </Reveal>
         <div className="mt-10 space-y-6 leading-relaxed text-muted-foreground [&_h2]:mt-10 [&_h2]:text-lg [&_h2]:text-foreground">
