@@ -3,7 +3,7 @@
 ## iPhone visuals
 - [x] Refresh the on-screen Mobile World logo and restore a clearly visible disassembly/reassembly loop.
 - [x] Verify the animation and logo on narrow and desktop screens.
-- [ ] Smooth the parts joining, hold the assembled phone at the loop boundary, and blend the animation into the next section.
+- [x] Smooth the parts joining, hold the assembled phone at the loop boundary, and blend the animation into the next section.
 
 - [x] Audit source, public files, credentials, and dependencies.
 - [x] Harden error reporting and add a fail-closed credential guard.
