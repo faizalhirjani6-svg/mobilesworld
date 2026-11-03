@@ -456,7 +456,7 @@ html.intro-reveal .header-logo { opacity: 1; transition: opacity 0.6s ease 0.34s
   initial-value: 3deg;
 }
 .phone3d {
-  transform: rotateX(calc(-8deg + 22deg * sin(var(--spin-angle) * 2))) rotateY(calc(var(--spin-angle) - 22deg)) rotateZ(var(--tumble-angle));
+  transform: rotateX(calc(-8deg + 30deg * sin(var(--spin-angle) * 2) + 8deg * sin(var(--spin-angle) * 3))) rotateY(calc(var(--spin-angle) - 22deg)) rotateZ(var(--tumble-angle));
   animation: seq-turn 8s linear infinite, seq-tumble 8s cubic-bezier(.4, 0, .6, 1) infinite !important;
 }
 .p3-front { animation: seq-front 8s ease-in-out infinite !important; }
@@ -549,18 +549,25 @@ html.intro-reveal .header-logo { opacity: 1; transition: opacity 0.6s ease 0.34s
 .p3-halo span {
   position: absolute; width: 300px; height: 300px; margin: -150px 0 0 -150px; border-radius: 50%;
   border: 1px solid color-mix(in oklab, var(--color-primary) 75%, transparent);
-  box-shadow: 0 0 22px 3px color-mix(in oklab, var(--color-primary) 55%, transparent),
-    inset 0 0 22px 3px color-mix(in oklab, var(--color-primary) 45%, transparent);
+  box-shadow: 0 0 12px color-mix(in oklab, var(--color-primary) 35%, transparent),
+    inset 0 0 12px color-mix(in oklab, var(--color-primary) 25%, transparent);
   animation: halo-a 6s linear infinite !important;
 }
 .p3-halo span:nth-child(2) {
   width: 360px; height: 360px; margin: -180px 0 0 -180px; border-color: var(--color-accent);
-  box-shadow: 0 0 22px 3px color-mix(in oklab, var(--color-accent) 55%, transparent),
-    inset 0 0 22px 3px color-mix(in oklab, var(--color-accent) 45%, transparent);
+  border-style: dashed;
+  box-shadow: 0 0 12px color-mix(in oklab, var(--color-accent) 35%, transparent),
+    inset 0 0 12px color-mix(in oklab, var(--color-accent) 25%, transparent);
   animation: halo-b 9s linear infinite !important;
 }
 @keyframes halo-a { from { transform: rotateX(72deg) rotateZ(0); } to { transform: rotateX(72deg) rotateZ(360deg); } }
 @keyframes halo-b { from { transform: rotateY(65deg) rotateX(20deg) rotateZ(0); } to { transform: rotateY(65deg) rotateX(20deg) rotateZ(-360deg); } }
+.p3-halo span::before {
+  content: ""; position: absolute; inset: -7px; border-radius: inherit;
+  border: 2px solid transparent; border-top-color: var(--color-foreground);
+  border-right-color: color-mix(in oklab, var(--color-primary) 55%, transparent);
+  filter: drop-shadow(0 0 4px var(--color-primary));
+}
 .p3-halo span::after {
   content: ""; position: absolute; top: -5px; left: 50%; width: 10px; height: 10px; border-radius: 50%;
   background: var(--color-foreground); box-shadow: 0 0 14px var(--color-foreground);
@@ -578,6 +585,32 @@ html.intro-reveal .header-logo { opacity: 1; transition: opacity 0.6s ease 0.34s
 }
 
 .p3-front .p3-wall { inset: 5px; border-radius: calc(var(--r) - 5px); background: oklch(0.04 0.005 265); box-shadow: none; }
+.p3-back {
+  box-shadow: inset 0 0 0 1px var(--phone-metal),
+    0 0 18px color-mix(in oklab, var(--color-accent) 28%, transparent);
+}
+.p3-glare {
+  background: linear-gradient(115deg, transparent 44%, color-mix(in oklab, var(--color-foreground) 18%, transparent) 49%, color-mix(in oklab, var(--color-accent) 12%, transparent) 52%, transparent 57%);
+  animation: phone-light-sweep 8s ease-in-out infinite !important;
+  pointer-events: none;
+}
+@keyframes phone-light-sweep {
+  0%,100% { transform: translateX(-45%); opacity: .3; }
+  12.5% { transform: translateX(40%); opacity: .8; }
+  45% { transform: translateX(-20%); opacity: .35; }
+  75% { transform: translateX(35%); opacity: .65; }
+}
+.p3-board::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(to bottom, transparent 35%, color-mix(in oklab, var(--color-primary) 45%, transparent) 49%, transparent 63%);
+  animation: circuit-scan 8s linear infinite !important;
+}
+@keyframes circuit-scan {
+  0% { transform: translateY(-45%); opacity: 0; }
+  5% { opacity: .9; }
+  12.5% { transform: translateY(45%); opacity: 0; }
+  100% { transform: translateY(45%); opacity: 0; }
+}
 .p3-front .p3-wall::before {
   content: ""; position: absolute; top: 7px; left: 50%; width: 34%; height: 9px; transform: translateX(-50%);
   border-radius: 99px; background: oklch(0 0 0); z-index: 2;
