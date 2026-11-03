@@ -193,11 +193,11 @@ export function Header() {
   }, []);
   return (
     <header className={`site-header sticky top-0 z-40 border-b bg-background ${hidden ? "is-hidden" : ""}`}>
-      <div className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-3 py-4 sm:flex sm:justify-between sm:px-5">
+      <div className="mx-auto grid max-w-6xl grid-cols-[auto_auto] items-center justify-between gap-2 px-3 py-4 sm:flex sm:px-5">
           <Link
             to="/"
             data-header-logo
-            className="header-logo min-w-0 truncate font-display text-xs font-bold sm:shrink-0 sm:text-lg"
+            className="header-logo shrink-0 whitespace-nowrap font-display text-[10px] font-bold leading-none sm:text-sm"
           >
             MOBILE<span className="text-primary">WORLD</span>
           </Link>
@@ -215,6 +215,13 @@ export function Header() {
               inactiveProps={{ className: "nav-link" }}
             >
               Home
+            </Link>
+            <Link
+              to="/shop"
+              activeProps={{ className: "nav-link is-active" }}
+              inactiveProps={{ className: "nav-link" }}
+            >
+              Shop
             </Link>
             <Link
               to="/privacy"
