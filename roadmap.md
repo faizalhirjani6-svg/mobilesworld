@@ -1,6 +1,7 @@
 # Security and Netlify readiness
 
 ## iPhone visuals
+- [x] Enhance all five uploaded shop photos and add them to the shop gallery.
 - [x] Remove the counter photo and verify the animation behind the opening text on phone and desktop screens.
 - [x] Refresh the on-screen Mobile World logo and restore a clearly visible disassembly/reassembly loop.
 - [x] Verify the animation and logo on narrow and desktop screens.
