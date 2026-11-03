@@ -35,6 +35,11 @@ async def check_sequence():
                         y: new DOMMatrixReadOnly(read('.stage3d-track').transform).m42,
                         yaw: parseFloat(read('.phone3d').getPropertyValue('--spin-angle')),
                         roll: parseFloat(read('.phone3d').getPropertyValue('--tumble-angle')),
+                        facing: (() => {
+                            const phone = new DOMMatrixReadOnly(read('.phone3d').transform);
+                            const front = new DOMMatrixReadOnly(read('.p3-front').transform);
+                            return phone.multiply(front).m33;
+                        })(),
                     };
                 }""")
 
@@ -57,6 +62,7 @@ async def check_sequence():
                 assert abs(sample['x'] - radius * math.sin(angle)) < .02, f'Orbit circle mismatch: {width} {time} {sample["x"]} expected {radius * math.sin(angle)}'
                 assert abs(sample['depth'] - (radius * (math.cos(angle) - 1) - 45)) < .02, 'Orbit must stay only slightly farther back'
                 assert sample['y'] == 0, f"Unexpected vertical movement: {time} {sample}"
+                assert sample['facing'] > .8, 'Logo screen must always face the viewer, never turn backward or edge-on'
                 step = (sample['yaw'] - previous_yaw) % 360
                 assert 10 < step < 13, 'Rotation must advance smoothly without pauses'
                 previous_yaw = sample['yaw']
