@@ -434,7 +434,15 @@ html.intro-reveal .header-logo { opacity: 1; transition: opacity 0.6s ease 0.34s
 
 /* Seamless infinite loop: the phone never leaves the stage — every keyframe ends where it starts */
 .stage3d { --orbit-radius: min(12vw, 120px); }
-.stage3d-track { animation: seq-path 8s linear infinite !important; }
+@property --orbit-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+.stage3d-track {
+  transform: translate3d(calc(var(--orbit-radius) * sin(var(--orbit-angle))), 0px, calc(var(--orbit-radius) * (cos(var(--orbit-angle)) - 1)));
+  animation: seq-path 8s linear infinite !important;
+}
 .stage3d-track > .p3-lift { animation: seq-bob 8s ease-in-out infinite !important; }
 .p3-shadow { animation: seq-shadow 8s ease-in-out infinite !important; }
 .phone3d { animation: seq-turn 8s linear infinite !important; }
@@ -442,10 +450,10 @@ html.intro-reveal .header-logo { opacity: 1; transition: opacity 0.6s ease 0.34s
 .p3-back { animation: seq-back 8s ease-in-out infinite !important; backface-visibility: visible; }
 .p3-slice { animation: seq-body 8s ease-in-out infinite !important; }
 @keyframes seq-bob { 0%,100% { transform: translateY(-6px); } 50% { transform: translateY(6px); } }
-/* Counter-rotation keeps the track facing forward along a constant-speed circle. */
+/* A continuous angle describes a true circle without easing or stationary holds. */
 @keyframes seq-path {
-  from { transform: translateZ(calc(var(--orbit-radius) * -1)) rotateY(0deg) translateZ(var(--orbit-radius)) rotateY(0deg); }
-  to { transform: translateZ(calc(var(--orbit-radius) * -1)) rotateY(360deg) translateZ(var(--orbit-radius)) rotateY(-360deg); }
+  from { --orbit-angle: 0deg; }
+  to { --orbit-angle: 360deg; }
 }
 @keyframes seq-shadow {
   0%,100% { transform: scale(.85); opacity: .85; }
