@@ -1,6 +1,7 @@
 # Security and Netlify readiness
 
 ## iPhone visuals
+- [ ] Remove the counter photo and verify the animation behind the opening text on phone and desktop screens.
 - [x] Refresh the on-screen Mobile World logo and restore a clearly visible disassembly/reassembly loop.
 - [x] Verify the animation and logo on narrow and desktop screens.
 - [x] Smooth the parts joining, hold the assembled phone at the loop boundary, and blend the animation into the next section.
