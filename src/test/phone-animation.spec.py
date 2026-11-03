@@ -27,6 +27,7 @@ async def check_sequence():
                         board: read('.p3-board').opacity,
                         turn: read('.phone3d').transform,
                         path: read('.stage3d-track').transform,
+                        depth: new DOMMatrixReadOnly(read('.stage3d-track').transform).m43,
                     };
                 }""")
 
@@ -40,15 +41,18 @@ async def check_sequence():
             assembled = await state()
             assert assembled["front"] == start["front"], "Phone must reassemble by one second"
             assert assembled["board"] == "0"
-            await seek(2000)
+            await seek(4500)
             middle = await state()
             assert middle["turn"] != assembled["turn"], "Assembled phone must rotate"
             assert middle["path"] != start["path"], "Phone must glide on both screen sizes"
-            await seek(4000)
+            assert middle["depth"] < -600, "Phone must orbit far into the distance"
+            await page.locator('.stage3d').screenshot(path=f'/tmp/browser/phone/distant-{width}.png')
+            await seek(8000)
             end = await state()
             # A complete 360-degree turn returns the same orientation.
             assert end["turn"] == start["turn"], "Spin must finish at the starting orientation"
-            await seek(4500)
+            assert end["depth"] == 0, "Phone must return from the distant orbit"
+            await seek(8500)
             assert (await state())["board"] == "1", "Disassembly must repeat after the spin"
             await page.locator('.stage3d').screenshot(path=f'/tmp/browser/phone/sequence-{width}.png')
             print(f"{width}: one-second disassembly/reassembly, gliding full turn, repeated disassembly passed")
