@@ -13,3 +13,4 @@
 - No credential-backed integrations exist; do not add empty API proxies, and keep future secrets inside server handlers with explicit response allowlists.
 - Error diagnostics use fixed messages rather than raw messages, stacks, causes or context because arbitrary error data can contain credentials.
 - Run the credential guard on source and public build artifacts before Netlify deploys; server bundles must never be in the public publish directory.
+- Keep the phone's screen, chassis, back, and circuit-board animations synchronized as one CSS sequence; the exploded pose must expose the internals while retaining a readable front logo.

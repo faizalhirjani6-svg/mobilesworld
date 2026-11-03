@@ -170,11 +170,15 @@ function Index() {
         <div className="stage3d-track"><div className="p3-lift">
           <div className="phone3d">
             <div className="p3-slice" style={{ "--z": "-4px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "-3px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "-2px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "-1px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "0px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "1px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "2px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "3px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "4px" } as CSSProperties} />
-            <div className="p3-board"><span className="p3-chip" /><span className="p3-batt" /></div>
+            <div className="p3-board"><span className="p3-chip" /><span className="p3-batt" /><span className="p3-camera" /><span className="p3-connector" /></div>
             <div className="p3-front">
               <img src={phoneFront} alt="" width={576} height={1168} />
               <div className="p3-wall">
-                <div className="p3-mark" aria-hidden="true"><span>MOBILE</span><span>WORLD</span></div>
+                <div className="p3-mark" aria-hidden="true">
+                  <div className="p3-emblem"><span>MW</span><i /></div>
+                  <div className="p3-wordmark"><span>MOBILE</span><span>WORLD</span></div>
+                  <div className="p3-mark-line" />
+                </div>
               </div>
               <span className="p3-glare" />
             </div>
