@@ -1,5 +1,9 @@
 # Security and Netlify readiness
 
+## iPhone visuals
+- [ ] Refresh the on-screen Mobile World logo and restore a clearly visible disassembly/reassembly loop.
+- [ ] Verify the animation and logo on narrow and desktop screens.
+
 - [x] Audit source, public files, credentials, and dependencies.
 - [x] Harden error reporting and add a fail-closed credential guard.
 - [x] Configure Netlify adapter and document environment variables and function needs.
