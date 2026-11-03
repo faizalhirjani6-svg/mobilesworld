@@ -55,7 +55,7 @@ async def check_sequence():
                 await seek(time)
                 sample = await state()
                 angle = 2 * math.pi * time / 8000
-                assert abs(sample['x'] - radius * math.sin(angle)) < .02, 'Orbit must follow a circle without stopping'
+                assert abs(sample['x'] - radius * math.sin(angle)) < .02, f'Orbit circle mismatch: {width} {time} {sample["x"]} expected {radius * math.sin(angle)}'
                 assert abs(sample['depth'] - radius * (math.cos(angle) - 1)) < .02, 'Orbit must stay at moderate depth'
                 step = (sample['yaw'] - previous_yaw) % 360
                 assert 10 < step < 13, 'Rotation must advance smoothly without pauses'
