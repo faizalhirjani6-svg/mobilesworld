@@ -6,7 +6,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Header, Footer, Reveal, Photo, ScrollProgress, Parallax, GlideLink } from "@/components/site";
 import bench from "@/assets/shop-bench-real.jpg";
 import counter from "@/assets/shop-counter-real.jpg";
-import opening from "@/assets/opening-phone-real.jpg";
 import repairClose from "@/assets/repair-bench.jpg";
 import screen from "@/assets/screen-swap.jpg";
 import earbuds from "@/assets/earbuds-hand-real.jpg";
@@ -190,18 +189,6 @@ function Index() {
       </section>
 
 
-
-      {/* Full-bleed parallax image band */}
-      <section className="relative h-[70vh] overflow-hidden">
-        <Parallax speed={0.2}>
-          <img src={opening} alt="Technician opening a phone screen with a suction cup and pick" width={1024} height={1024} loading="lazy" className="h-[80vh] w-full object-cover" />
-        </Parallax>
-        <div className="absolute inset-x-0 bottom-0 bg-background/70 px-5 py-8">
-          <Reveal className="mx-auto max-w-6xl">
-            <h2 className="max-w-2xl text-2xl font-bold sm:text-4xl">Every part is tested before it goes in, and again after.</h2>
-          </Reveal>
-        </div>
-      </section>
 
       {/* Shop: everything in stock, laid out so it all shows */}
       <section id="audio" className="py-24">
