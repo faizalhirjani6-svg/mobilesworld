@@ -6,6 +6,11 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Header, Footer, Reveal, Photo, ScrollProgress, GlideLink } from "@/components/site";
 import repairClose from "@/assets/repair-bench.jpg";
 import screen from "@/assets/screen-swap.jpg";
+import shopShelves from "@/assets/shop-shelves-enhanced.jpg";
+import shopChargers from "@/assets/shop-chargers-enhanced.jpg";
+import shopStickers from "@/assets/shop-stickers-enhanced.jpg";
+import shopWorkbench from "@/assets/shop-workbench-enhanced.jpg";
+import shopCases from "@/assets/shop-cases-enhanced.jpg";
 import earbuds from "@/assets/earbuds-hand-real.jpg";
 import headphones from "@/assets/headphones.jpg";
 import wired from "@/assets/wired.jpg";
@@ -213,7 +218,7 @@ function Index() {
       </section>
 
       {/* Inside the shop */}
-      <section className="py-24">
+      <section id="shop-gallery" className="py-24">
         <div className="mx-auto max-w-6xl px-5">
           <Reveal>
             <p className="text-sm uppercase tracking-[0.25em] text-primary">Inside Mobile World</p>
@@ -224,6 +229,11 @@ function Index() {
         </div>
         <div className="snap-strip mt-12 flex gap-6 overflow-x-auto px-5 pb-4 md:px-10">
           {[
+            [shopShelves, "Audio and accessories arranged on the shop shelves", 1024, 768, "Around the shop"],
+            [shopChargers, "Chargers and cables in the glass display", 1024, 768, "Chargers & cables"],
+            [shopCases, "Phone cases displayed on wall hooks and racks", 1024, 768, "Cases for every style"],
+            [shopStickers, "Decorative phone skins and stickers in the shop", 1024, 768, "Skins & stickers"],
+            [shopWorkbench, "The shop repair workbench with tools and equipment", 1024, 768, "Our repair bench"],
             [repairClose, "Battery replacement in progress", 1024, 1280, "Battery swap"],
             [screen, "Cracked screen next to its replacement panel", 1280, 896, "Screen ready to fit"],
           ].map(([src, alt, , , cap], i) => (
