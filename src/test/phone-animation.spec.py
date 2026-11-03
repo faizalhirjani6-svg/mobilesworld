@@ -17,6 +17,7 @@ async def check_sequence():
                     for (const e of document.querySelectorAll('.stage3d *'))
                         for (const a of e.getAnimations()) { a.pause(); a.currentTime = time; }
                 }""", time)
+                await page.wait_for_timeout(50)
 
             async def state():
                 return await page.evaluate("""() => {
