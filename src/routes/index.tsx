@@ -4,6 +4,7 @@ import type { CSSProperties } from "react";
 import type { ReactNode } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Header, Footer, Reveal, Photo, ScrollProgress, GlideLink } from "@/components/site";
+import { ShopPhotoStrip } from "@/components/shop-photo-strip";
 import repairClose from "@/assets/repair-bench.jpg";
 import screen from "@/assets/screen-swap.jpg";
 import shopShelves from "@/assets/shop-shelves-enhanced.jpg";
@@ -227,7 +228,7 @@ function Index() {
             </h2>
           </Reveal>
         </div>
-        <div className="snap-strip mt-12 flex gap-6 overflow-x-auto px-5 pb-4 md:px-10">
+        <ShopPhotoStrip>
           {[
             [shopShelves, "Audio and accessories arranged on the shop shelves", 1024, 768, "Around the shop"],
             [shopChargers, "Chargers and cables in the glass display", 1024, 768, "Chargers & cables"],
@@ -236,15 +237,15 @@ function Index() {
             [shopWorkbench, "The shop repair workbench with tools and equipment", 1024, 768, "Our repair bench"],
             [repairClose, "Battery replacement in progress", 1024, 1280, "Battery swap"],
             [screen, "Cracked screen next to its replacement panel", 1280, 896, "Screen ready to fit"],
-          ].map(([src, alt, , , cap], i) => (
-            <Reveal key={cap as string} dir="right" delay={i * 140} className="w-[82vw] shrink-0 sm:w-[50vw] lg:w-[40vw]">
+          ].map(([src, alt, , , cap]) => (
+            <div key={cap as string} className="min-w-0 w-[82vw] shrink-0 sm:w-[50vw] lg:w-[40vw]">
               <figure>
                 <Photo src={src as string} alt={alt as string} w={4} h={3} />
                 <figcaption className="mt-3 font-serif text-xl italic text-muted-foreground">{cap as string}</figcaption>
               </figure>
-            </Reveal>
+            </div>
           ))}
-        </div>
+        </ShopPhotoStrip>
       </section>
 
       {/* Process: big numbers, open layout */}
