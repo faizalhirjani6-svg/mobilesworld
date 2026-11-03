@@ -202,17 +202,21 @@ export function Header() {
   }, []);
   return (
     <header className={`site-header sticky top-0 z-40 border-b bg-background ${hidden ? "is-hidden" : ""}`}>
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
-        <div className="flex min-w-0 flex-wrap items-center gap-2 sm:gap-4">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-3 py-4 sm:px-5">
           <Link
             to="/"
             data-header-logo
-            className="header-logo font-display text-base font-bold tracking-tight sm:text-lg"
+            className="header-logo shrink-0 whitespace-nowrap font-display text-xs font-bold sm:text-lg"
           >
             MOBILE<span className="text-primary">WORLD</span>
           </Link>
-          <span aria-hidden="true" className="hidden h-4 w-px bg-muted-foreground/30 sm:block" />
-          <nav className="flex items-center gap-1 sm:gap-6">
+        <div className="ml-auto flex shrink-0 items-center gap-5">
+          <nav className="hidden items-center gap-5 text-sm lg:flex" aria-label="Shop sections">
+            <a href="/#services" className="text-muted-foreground">Services</a>
+            <a href="/#process" className="text-muted-foreground">Process</a>
+            <a href="/#audio" className="text-muted-foreground">Audio</a>
+          </nav>
+          <nav aria-label="Main navigation" className="flex shrink-0 items-center gap-1 whitespace-nowrap [&_.nav-link]:text-xs sm:[&_.nav-link]:text-sm">
             <Link
               to="/"
               activeOptions={{ exact: true }}
@@ -230,18 +234,6 @@ export function Header() {
             </Link>
           </nav>
         </div>
-
-        <nav className="flex items-center gap-5 text-sm">
-          <a href="/#services" className="hidden sm:inline text-muted-foreground">
-            Services
-          </a>
-          <a href="/#process" className="hidden sm:inline text-muted-foreground">
-            Process
-          </a>
-          <a href="/#audio" className="hidden sm:inline text-muted-foreground">
-            Audio
-          </a>
-        </nav>
 
       </div>
     </header>
