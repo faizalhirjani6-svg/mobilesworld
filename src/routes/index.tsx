@@ -2,6 +2,7 @@ import phoneFront from "@/assets/phone-front.png";
 import phoneBack from "@/assets/phone-back.png";
 import type { CSSProperties } from "react";
 import type { ReactNode } from "react";
+import { useEffect, useRef } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Header, Footer, Reveal, Photo, ScrollProgress, GlideLink } from "@/components/site";
 import { ShopPhotoStrip } from "@/components/shop-photo-strip";
@@ -68,12 +69,12 @@ function ShopGrid({ items, start = 1 }: { items: { img: string; name: string; li
   return (
     <div className="mt-12 grid grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-3 sm:gap-x-6">
       {items.map((a, i) => (
-        <Reveal key={a.name} dir="y" delay={i * 80}>
+        <Reveal key={a.name} dir="y" delay={i * 80} className="min-w-0">
           <article>
             <Photo src={a.img} alt={a.name} w={1} h={1} />
-            <div className="mt-4 flex items-baseline gap-3">
-              <span className="font-display text-xs text-primary">{String(start + i).padStart(2, "0")}</span>
-              <h3 className="text-lg font-bold leading-tight sm:text-2xl">{a.name}</h3>
+            <div className="mt-4 grid grid-cols-[auto_minmax(0,1fr)] items-baseline gap-2 sm:gap-3">
+              <span className="shrink-0 font-display text-xs text-primary">{String(start + i).padStart(2, "0")}</span>
+              <h3 className="min-w-0 break-words text-base font-bold leading-tight sm:text-2xl">{a.name}</h3>
             </div>
             <p className="mt-2 text-sm text-muted-foreground sm:text-base">{a.line}</p>
           </article>
@@ -93,6 +94,23 @@ const steps = [
 const brands = ["Apple", "Samsung", "OnePlus", "Xiaomi", "Vivo", "Oppo", "Realme", "Google Pixel", "Motorola", "Nothing"];
 
 function Index() {
+  const phoneStage = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const stage = phoneStage.current;
+    if (!stage) return;
+    let visible = true;
+    const update = () => stage.toggleAttribute("data-motion-paused", !visible || document.hidden);
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = entry?.isIntersecting ?? false;
+      update();
+    });
+    observer.observe(stage);
+    document.addEventListener("visibilitychange", update);
+    return () => {
+      observer.disconnect();
+      document.removeEventListener("visibilitychange", update);
+    };
+  }, []);
   return (
     <div className="min-h-screen overflow-x-clip">
       <ScrollProgress />
@@ -100,8 +118,8 @@ function Index() {
 
 
       {/* Opening text over the decorative phone animation */}
-      <section className="relative isolate min-h-[88vh] overflow-hidden">
-      <div aria-hidden="true" className="stage3d hero-phone-background">
+      <section className="opening-section relative isolate overflow-hidden">
+      <div ref={phoneStage} aria-hidden="true" className="stage3d hero-phone-background">
         <div className="stage3d-grid" />
         <div className="p3-shadow" />
         <div className="stage3d-track"><div className="p3-lift">
@@ -125,12 +143,12 @@ function Index() {
         </div></div>
         <div className="stage3d-orbit"><span /><span /><span /></div>
       </div>
-        <div className="relative z-10 mx-auto flex min-h-[88vh] max-w-6xl flex-col justify-end px-5 pb-16">
+        <div className="opening-content relative z-10 mx-auto flex max-w-6xl flex-col justify-end px-5 pb-12 pt-12 sm:pb-16">
           <Reveal>
             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-primary">Repairs and audio</p>
           </Reveal>
           <Reveal delay={120}>
-            <h1 className="mt-5 text-[13vw] font-black leading-[0.9] sm:text-8xl">
+            <h1 className="mt-5 text-5xl font-black leading-[0.95] sm:text-8xl">
               Fix it.
               <br />
               <span className="font-serif font-normal italic text-accent">Hear it.</span>
@@ -172,7 +190,7 @@ function Index() {
         <div className="mt-12">
           {services.map(([n, t, d], i) => (
             <Reveal key={n} dir={i % 2 ? "right" : "left"}>
-              <div className="grid gap-2 border-b py-8 sm:grid-cols-[100px_1fr_1.3fr] sm:items-baseline">
+              <div className="grid gap-2 border-b py-8 sm:grid-cols-[60px_minmax(0,1fr)_minmax(0,1.3fr)] sm:items-baseline lg:grid-cols-[100px_minmax(0,1fr)_minmax(0,1.3fr)]">
                 <span className="font-display text-3xl font-black text-outline">{n}</span>
                 <h3 className="text-2xl font-bold">{t}</h3>
                 <p className="text-muted-foreground">{d}</p>
@@ -253,9 +271,9 @@ function Index() {
           <ol className="mt-14 space-y-12">
             {steps.map(([t, d], i) => (
               <Reveal key={t} dir={i % 2 ? "right" : "left"}>
-                <li className={`flex items-center gap-6 sm:gap-10 ${i % 2 ? "sm:flex-row-reverse sm:text-right" : ""}`}>
-                  <span className="font-display text-7xl font-black text-background sm:text-9xl">{i + 1}</span>
-                  <div>
+                <li className={`grid grid-cols-[auto_minmax(0,1fr)] items-center gap-6 sm:flex sm:gap-10 ${i % 2 ? "sm:flex-row-reverse sm:text-right" : ""}`}>
+                  <span className="shrink-0 font-display text-7xl font-black text-background sm:text-9xl">{i + 1}</span>
+                  <div className="min-w-0">
                     <h3 className="text-2xl font-bold sm:text-3xl">{t}</h3>
                     <p className="mt-1 max-w-sm opacity-85">{d}</p>
                   </div>
@@ -303,9 +321,9 @@ function Index() {
                   ["Hours", <>9:00 AM &ndash; 10:00 PM</>],
                 ] as [string, ReactNode][]
               ).map(([k, v]) => (
-                <div key={k} className="flex justify-between gap-6 py-5">
+                <div key={k} className="grid grid-cols-[auto_minmax(0,1fr)] gap-4 py-5 sm:gap-6">
                   <dt className="shrink-0 text-sm uppercase tracking-widest text-muted-foreground">{k}</dt>
-                  <dd className="text-right font-semibold">{v}</dd>
+                  <dd className="min-w-0 break-words text-right font-semibold">{v}</dd>
                 </div>
               ))}
             </dl>

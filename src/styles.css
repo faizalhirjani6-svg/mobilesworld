@@ -65,14 +65,18 @@
 
 @layer base {
   * { border-color: var(--color-border); }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; scroll-padding-top: 5rem; }
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
   }
-  h1, h2, h3 { font-family: var(--font-display); }
+  h1, h2, h3 { font-family: var(--font-display); overflow-wrap: break-word; }
+  a { touch-action: manipulation; }
+  a:focus-visible { outline: 2px solid var(--color-ring); outline-offset: 4px; }
 }
+
+.opening-section, .opening-content { min-height: 88vh; min-height: 88svh; }
 
 /* Scroll glide: items slide in from the direction they were left, out the way they are scrolled */
 .reveal {
@@ -81,7 +85,6 @@
   transition:
     opacity 0.75s cubic-bezier(.2, .7, .2, 1),
     transform 0.75s cubic-bezier(.2, .7, .2, 1);
-  will-change: transform, opacity;
   transition-delay: var(--delay, 0ms);
 }
 .reveal-left { --from-x: -80px; }
@@ -97,6 +100,8 @@
 /* Header nav: the page you're on stays lit up, the rest waits quietly */
 .nav-link {
   display: inline-block;
+  min-height: 36px;
+  align-content: center;
   font-size: 0.875rem;
   font-weight: 600;
   padding: 0.3rem 0.65rem;
@@ -110,6 +115,9 @@
 .nav-link:hover { color: var(--color-foreground); transform: translateY(-1px); }
 @media (max-width: 639px) {
   .nav-link { padding: 0.28rem 0.5rem; }
+}
+@media (max-width: 359px) {
+  .nav-link { padding-inline: 0.3rem; }
 }
 @keyframes nav-pop {
   from { opacity: 0; transform: translateY(7px); }
@@ -173,6 +181,7 @@
   .hero-phone-background { opacity: .5; }
 }
 @media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
   .reveal { opacity: 1; transform: none; transition: none; }
   .ticker { animation: none; }
   .cta-chip { transition: none; }
@@ -181,6 +190,10 @@
   .site-header { transition: none; }
   .site-header.is-hidden { transform: none; }
 }
+
+.stage3d[data-motion-paused] *,
+.stage3d[data-motion-paused] *::before,
+.stage3d[data-motion-paused] *::after { animation-play-state: paused !important; }
 
 
 .text-outline { color: transparent; -webkit-text-stroke: 1.5px var(--color-foreground); }

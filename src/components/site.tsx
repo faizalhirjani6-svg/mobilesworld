@@ -70,18 +70,8 @@ function useGlide(ref: RefObject<HTMLElement | null>, vertical: boolean, distanc
     );
     io.observe(el);
 
-    let raf = 0;
-    const onScroll = () => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(park);
-    };
     park();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      io.disconnect();
-      window.removeEventListener("scroll", onScroll);
-      cancelAnimationFrame(raf);
-    };
+    return () => io.disconnect();
   }, [ref, vertical, distance]);
 }
 
@@ -162,6 +152,7 @@ export function Photo({
         alt={alt}
         width={w}
         height={h}
+        decoding="async"
         loading={eager ? "eager" : "lazy"}
         onLoad={() => setLoaded(true)}
         ref={(img) => {
@@ -202,11 +193,11 @@ export function Header() {
   }, []);
   return (
     <header className={`site-header sticky top-0 z-40 border-b bg-background ${hidden ? "is-hidden" : ""}`}>
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-3 py-4 sm:px-5">
+      <div className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-3 py-4 sm:flex sm:justify-between sm:px-5">
           <Link
             to="/"
             data-header-logo
-            className="header-logo shrink-0 whitespace-nowrap font-display text-xs font-bold sm:text-lg"
+            className="header-logo min-w-0 truncate font-display text-xs font-bold sm:shrink-0 sm:text-lg"
           >
             MOBILE<span className="text-primary">WORLD</span>
           </Link>
@@ -245,7 +236,7 @@ export function Footer() {
     <footer className="border-t">
       <div className="mx-auto flex max-w-6xl flex-col gap-4 px-5 py-10 text-sm text-muted-foreground sm:flex-row sm:justify-between">
         <p>© {new Date().getFullYear()} Mobile World. All repairs carry a written warranty.</p>
-        <div className="flex gap-6">
+        <div className="flex shrink-0 flex-wrap gap-x-6 gap-y-3">
           <Link
             to="/terms"
             inactiveProps={{ className: "nav-foot" }}
@@ -292,14 +283,20 @@ export function LegalPage({ title, children }: { title: string; children: ReactN
 export function ScrollProgress() {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const on = () => {
+    let raf = 0;
+    const update = () => {
+      raf = 0;
       const h = document.documentElement;
       const p = h.scrollTop / Math.max(1, h.scrollHeight - h.clientHeight);
       if (ref.current) ref.current.style.transform = `scaleX(${p})`;
     };
-    on();
+    const on = () => { if (!raf) raf = requestAnimationFrame(update); };
+    update();
     window.addEventListener("scroll", on, { passive: true });
-    return () => window.removeEventListener("scroll", on);
+    return () => {
+      window.removeEventListener("scroll", on);
+      cancelAnimationFrame(raf);
+    };
   }, []);
   return (
     <div
