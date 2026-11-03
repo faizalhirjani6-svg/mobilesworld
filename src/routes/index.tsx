@@ -72,9 +72,9 @@ function ShopGrid({ items, start = 1 }: { items: { img: string; name: string; li
         <Reveal key={a.name} dir="y" delay={i * 80} className="min-w-0">
           <article>
             <Photo src={a.img} alt={a.name} w={1} h={1} />
-            <div className="mt-4 grid grid-cols-[auto_minmax(0,1fr)] items-baseline gap-2 sm:gap-3">
+            <div className="mt-4 grid grid-cols-1 items-baseline gap-1 sm:grid-cols-[auto_minmax(0,1fr)] sm:gap-3">
               <span className="shrink-0 font-display text-xs text-primary">{String(start + i).padStart(2, "0")}</span>
-              <h3 className="min-w-0 break-words text-base font-bold leading-tight sm:text-2xl">{a.name}</h3>
+              <h3 className="min-w-0 break-words text-sm font-bold leading-tight sm:text-2xl">{a.name}</h3>
             </div>
             <p className="mt-2 text-sm text-muted-foreground sm:text-base">{a.line}</p>
           </article>
