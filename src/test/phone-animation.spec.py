@@ -40,7 +40,7 @@ async def check_sequence():
             assembled = await state()
             assert assembled["front"] == start["front"], "Phone must reassemble by one second"
             assert assembled["board"] == "0"
-            await seek(2500)
+            await seek(2000)
             middle = await state()
             assert middle["turn"] != assembled["turn"], "Assembled phone must rotate"
             assert middle["path"] != start["path"], "Phone must glide on both screen sizes"
