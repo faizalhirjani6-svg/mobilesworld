@@ -5,8 +5,6 @@ import type { ReactNode } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Header, Footer, Reveal, Photo, ScrollProgress, GlideLink } from "@/components/site";
 import { ShopPhotoStrip } from "@/components/shop-photo-strip";
-import repairClose from "@/assets/repair-bench.jpg";
-import screen from "@/assets/screen-swap.jpg";
 import shopShelves from "@/assets/shop-shelves-enhanced.jpg";
 import shopChargers from "@/assets/shop-chargers-enhanced.jpg";
 import shopStickers from "@/assets/shop-stickers-enhanced.jpg";
@@ -235,8 +233,6 @@ function Index() {
             [shopCases, "Phone cases displayed on wall hooks and racks", 1024, 768, "Cases for every style"],
             [shopStickers, "Decorative phone skins and stickers in the shop", 1024, 768, "Skins & stickers"],
             [shopWorkbench, "The shop repair workbench with tools and equipment", 1024, 768, "Our repair bench"],
-            [repairClose, "Battery replacement in progress", 1024, 1280, "Battery swap"],
-            [screen, "Cracked screen next to its replacement panel", 1280, 896, "Screen ready to fit"],
           ].map(([src, alt, , , cap]) => (
             <div key={cap as string} className="min-w-0 w-[82vw] shrink-0 sm:w-[50vw] lg:w-[40vw]">
               <figure>
