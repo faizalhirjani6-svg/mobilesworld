@@ -433,19 +433,32 @@ html.intro-reveal .header-logo { opacity: 1; transition: opacity 0.6s ease 0.34s
 .p3-front img, .p3-back img { transform: scale(1.05); }
 
 /* Seamless infinite loop: the phone never leaves the stage — every keyframe ends where it starts */
-.stage3d { --orbit-radius: min(12vw, 120px); --hover-height: 48px; --orbit-setback: 45px; }
+.stage3d { --orbit-radius: min(12vw, 120px); --orbit-setback: 45px; }
 @property --orbit-angle {
   syntax: '<angle>';
   inherits: false;
   initial-value: 0deg;
 }
 .stage3d-track {
-  transform: translate3d(calc(var(--orbit-radius) * sin(var(--orbit-angle))), calc(var(--hover-height) * sin(var(--orbit-angle) * 2)), calc(var(--orbit-radius) * (cos(var(--orbit-angle)) - 1) - var(--orbit-setback)));
+  transform: translate3d(calc(var(--orbit-radius) * sin(var(--orbit-angle))), 0px, calc(var(--orbit-radius) * (cos(var(--orbit-angle)) - 1) - var(--orbit-setback)));
   animation: seq-path 8s linear infinite !important;
 }
-.stage3d-track > .p3-lift { animation: seq-bob 8s ease-in-out infinite !important; }
+.stage3d-track > .p3-lift { animation: none !important; }
 .p3-shadow { animation: seq-shadow 8s ease-in-out infinite !important; }
-.phone3d { animation: seq-turn 8s linear infinite !important; }
+@property --spin-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+@property --tumble-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 3deg;
+}
+.phone3d {
+  transform: rotateX(calc(-8deg + 22deg * sin(var(--spin-angle) * 2))) rotateY(calc(var(--spin-angle) - 22deg)) rotateZ(var(--tumble-angle));
+  animation: seq-turn 8s linear infinite, seq-tumble 8s cubic-bezier(.4, 0, .6, 1) infinite !important;
+}
 .p3-front { animation: seq-front 8s ease-in-out infinite !important; }
 .p3-back { animation: seq-back 8s ease-in-out infinite !important; backface-visibility: visible; }
 .p3-slice { animation: seq-body 8s ease-in-out infinite !important; }
@@ -463,8 +476,17 @@ html.intro-reveal .header-logo { opacity: 1; transition: opacity 0.6s ease 0.34s
 }
 /* turns non-stop; faces front while it opens up, and the loop closes on itself */
 @keyframes seq-turn {
-  from { transform: rotateX(-8deg) rotateY(-22deg) rotateZ(3deg); }
-  to { transform: rotateX(-8deg) rotateY(338deg) rotateZ(3deg); }
+  from { --spin-angle: 0deg; }
+  to { --spin-angle: 360deg; }
+}
+@keyframes seq-tumble {
+  0% { --tumble-angle: 3deg; }
+  12.5% { --tumble-angle: 8deg; }
+  30% { --tumble-angle: 95deg; }
+  52% { --tumble-angle: 195deg; }
+  70% { --tumble-angle: 265deg; }
+  85% { --tumble-angle: 315deg; }
+  100% { --tumble-angle: 363deg; }
 }
 /* exploded view: the screen lifts off and floats above the chassis, the back panel
    drops away below it, the frame layers spread and the board lights up in the middle */
@@ -584,7 +606,7 @@ html.intro-reveal .header-logo { opacity: 1; transition: opacity 0.6s ease 0.34s
   background: linear-gradient(to bottom, transparent, color-mix(in oklab, var(--color-background) 35%, transparent) 30%, color-mix(in oklab, var(--color-background) 85%, transparent) 70%, var(--color-background));
 }
 @media (max-width: 640px) {
-  .stage3d { --orbit-radius: 70px; --hover-height: 32px; }
+  .stage3d { --orbit-radius: 70px; }
   .phone3d { --w: 140px; --h: 284px; --r: 24px; }
   .p3-emblem { width: 76px; height: 76px; }
 }
