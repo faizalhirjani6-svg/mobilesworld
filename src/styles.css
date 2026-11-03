@@ -433,14 +433,14 @@ html.intro-reveal .header-logo { opacity: 1; transition: opacity 0.6s ease 0.34s
 .p3-front img, .p3-back img { transform: scale(1.05); }
 
 /* Seamless infinite loop: the phone never leaves the stage — every keyframe ends where it starts */
-.stage3d { --orbit-radius: min(12vw, 120px); }
+.stage3d { --orbit-radius: min(12vw, 120px); --hover-height: 48px; --orbit-setback: 45px; }
 @property --orbit-angle {
   syntax: '<angle>';
   inherits: false;
   initial-value: 0deg;
 }
 .stage3d-track {
-  transform: translate3d(calc(var(--orbit-radius) * sin(var(--orbit-angle))), 0px, calc(var(--orbit-radius) * (cos(var(--orbit-angle)) - 1)));
+  transform: translate3d(calc(var(--orbit-radius) * sin(var(--orbit-angle))), calc(var(--hover-height) * sin(var(--orbit-angle) * 2)), calc(var(--orbit-radius) * (cos(var(--orbit-angle)) - 1) - var(--orbit-setback)));
   animation: seq-path 8s linear infinite !important;
 }
 .stage3d-track > .p3-lift { animation: seq-bob 8s ease-in-out infinite !important; }
@@ -584,7 +584,7 @@ html.intro-reveal .header-logo { opacity: 1; transition: opacity 0.6s ease 0.34s
   background: linear-gradient(to bottom, transparent, color-mix(in oklab, var(--color-background) 35%, transparent) 30%, color-mix(in oklab, var(--color-background) 85%, transparent) 70%, var(--color-background));
 }
 @media (max-width: 640px) {
-  .stage3d { --orbit-radius: 70px; }
+  .stage3d { --orbit-radius: 70px; --hover-height: 32px; }
   .phone3d { --w: 140px; --h: 284px; --r: 24px; }
   .p3-emblem { width: 76px; height: 76px; }
 }

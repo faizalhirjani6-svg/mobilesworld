@@ -32,6 +32,7 @@ async def check_sequence():
                         path: read('.stage3d-track').transform,
                         depth: new DOMMatrixReadOnly(read('.stage3d-track').transform).m43,
                         x: new DOMMatrixReadOnly(read('.stage3d-track').transform).m41,
+                        y: new DOMMatrixReadOnly(read('.stage3d-track').transform).m42,
                         yaw: (() => {
                             const m = new DOMMatrixReadOnly(read('.phone3d').transform);
                             return Math.atan2(m.m31, m.m33) * 180 / Math.PI;
@@ -56,7 +57,9 @@ async def check_sequence():
                 sample = await state()
                 angle = 2 * math.pi * time / 8000
                 assert abs(sample['x'] - radius * math.sin(angle)) < .02, f'Orbit circle mismatch: {width} {time} {sample["x"]} expected {radius * math.sin(angle)}'
-                assert abs(sample['depth'] - radius * (math.cos(angle) - 1)) < .02, 'Orbit must stay at moderate depth'
+                assert abs(sample['depth'] - (radius * (math.cos(angle) - 1) - 45)) < .02, 'Orbit must stay only slightly farther back'
+                hover_height = 32 if width == 360 else 48
+                assert abs(sample['y'] - hover_height * math.sin(angle * 2)) < .02, 'Phone must hover through different vertical positions'
                 step = (sample['yaw'] - previous_yaw) % 360
                 assert 10 < step < 13, 'Rotation must advance smoothly without pauses'
                 previous_yaw = sample['yaw']
@@ -64,13 +67,13 @@ async def check_sequence():
             middle = await state()
             assert middle["turn"] != assembled["turn"], "Assembled phone must rotate"
             assert middle["path"] != start["path"], "Phone must glide on both screen sizes"
-            assert abs(middle['depth'] + radius * 2) < .02, 'Phone must not retreat too far'
+            assert abs(middle['depth'] + radius * 2 + 45) < .02, 'Phone must not retreat too far'
             await page.locator('.stage3d').screenshot(path=f'/tmp/browser/phone/distant-{width}.png')
             await seek(8000)
             end = await state()
             # A complete 360-degree turn returns the same orientation.
             assert abs(end['yaw'] - start['yaw']) < .02, "Spin must finish at the starting orientation"
-            assert end["depth"] == 0, "Phone must return from the distant orbit"
+            assert end["depth"] == -45, "Phone must return to its slightly recessed starting position"
             await seek(8500)
             assert (await state())["board"] == "1", "Disassembly must repeat after the spin"
             await page.locator('.stage3d').screenshot(path=f'/tmp/browser/phone/sequence-{width}.png')
