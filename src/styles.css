@@ -639,7 +639,7 @@ html.intro-reveal .header-logo { opacity: 1; transition: opacity 0.6s ease 0.34s
   background: linear-gradient(to bottom, transparent, color-mix(in oklab, var(--color-background) 35%, transparent) 30%, color-mix(in oklab, var(--color-background) 85%, transparent) 70%, var(--color-background));
 }
 @media (max-width: 640px) {
-  .stage3d { --orbit-radius: 70px; }
+  .stage3d { --orbit-radius: 50px; }
   .phone3d { --w: 140px; --h: 284px; --r: 24px; }
   .p3-emblem { width: 76px; height: 76px; }
 }

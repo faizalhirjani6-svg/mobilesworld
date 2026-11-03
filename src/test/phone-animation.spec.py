@@ -53,7 +53,7 @@ async def check_sequence():
             assembled = await state()
             assert assembled["front"] == start["front"], "Phone must reassemble by one second"
             assert assembled["board"] == "0"
-            radius = 70 if width == 360 else 120
+            radius = 50 if width == 360 else 120
             previous_yaw = start['yaw']
             for time in range(250, 8001, 250):
                 await seek(time)
