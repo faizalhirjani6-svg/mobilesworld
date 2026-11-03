@@ -155,7 +155,7 @@
 @keyframes shimmer { 0%{opacity:.5} 50%{opacity:1} 100%{opacity:.5} }
 .skeleton { background: var(--color-muted); animation: shimmer 1.4s ease-in-out infinite; }
 
-.hero-phone-background {
+.stage3d.hero-phone-background {
   position: absolute; inset: 0; height: 100%; min-height: 0; z-index: -1;
   pointer-events: none; opacity: .6;
 }
