@@ -16,3 +16,4 @@
 - Keep the phone's screen, chassis, back, and circuit-board animations synchronized as one CSS sequence; the exploded pose must expose the internals while retaining a readable front logo.
 - Render the phone animation once inside the opening section as a non-interactive decorative background, so content and links remain above it.
 - Use the dedicated Embla photo strip for gallery movement, keeping continuous looping and touch dragging in one place and respecting reduced motion.
+- Use constrained grid tracks for narrow header and text rows; keep decorative phone motion synchronized and pause it only when offscreen or the document is hidden to reduce background rendering.
