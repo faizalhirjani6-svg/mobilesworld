@@ -568,9 +568,13 @@ html.intro-reveal .header-logo { opacity: 1; transition: opacity 0.6s ease 0.34s
 .p3-mark-line { width: 28px; height: 2px; background: var(--color-accent); }
 .p3-camera { position: absolute; top: 5%; left: 7%; width: 18px; height: 18px; border: 4px solid var(--phone-metal); border-radius: 50%; background: var(--phone-glass); }
 .p3-connector { position: absolute; bottom: 4%; left: 35%; width: 30%; height: 7px; border: 1px solid var(--color-primary); background: var(--phone-glass); }
+.stage3d::after {
+  content: ""; position: absolute; inset: auto 0 0; height: 150px; z-index: 2; pointer-events: none;
+  background: linear-gradient(to bottom, transparent, color-mix(in oklab, var(--color-background) 35%, transparent) 30%, color-mix(in oklab, var(--color-background) 85%, transparent) 70%, var(--color-background));
+}
 .stage3d + section::before {
-  content: ""; position: absolute; inset: 0 0 auto; height: 100px; z-index: 1; pointer-events: none;
-  background: linear-gradient(to bottom, var(--color-background), transparent);
+  content: ""; position: absolute; inset: 0 0 auto; height: 220px; z-index: 1; pointer-events: none;
+  background: linear-gradient(to bottom, var(--color-background), color-mix(in oklab, var(--color-background) 95%, transparent) 18%, color-mix(in oklab, var(--color-background) 65%, transparent) 48%, color-mix(in oklab, var(--color-background) 20%, transparent) 76%, transparent);
 }
 @media (max-width: 640px) {
   .phone3d { --w: 140px; --h: 284px; --r: 24px; }
