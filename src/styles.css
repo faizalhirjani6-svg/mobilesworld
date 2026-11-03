@@ -433,8 +433,16 @@ html.intro-reveal .header-logo { opacity: 1; transition: opacity 0.6s ease 0.34s
 .p3-front img, .p3-back img { transform: scale(1.05); }
 
 /* Seamless infinite loop: the phone never leaves the stage — every keyframe ends where it starts */
-.stage3d { --glide-x: min(18vw, 200px); --glide-y: 64px; }
-.stage3d-track { animation: seq-path 8s ease-in-out infinite !important; }
+.stage3d { --orbit-radius: min(12vw, 120px); }
+@property --orbit-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+.stage3d-track {
+  transform: translate3d(calc(var(--orbit-radius) * sin(var(--orbit-angle))), 0px, calc(var(--orbit-radius) * (cos(var(--orbit-angle)) - 1)));
+  animation: seq-path 8s linear infinite !important;
+}
 .stage3d-track > .p3-lift { animation: seq-bob 8s ease-in-out infinite !important; }
 .p3-shadow { animation: seq-shadow 8s ease-in-out infinite !important; }
 .phone3d { animation: seq-turn 8s linear infinite !important; }
@@ -442,27 +450,21 @@ html.intro-reveal .header-logo { opacity: 1; transition: opacity 0.6s ease 0.34s
 .p3-back { animation: seq-back 8s ease-in-out infinite !important; backface-visibility: visible; }
 .p3-slice { animation: seq-body 8s ease-in-out infinite !important; }
 @keyframes seq-bob { 0%,100% { transform: translateY(-6px); } 50% { transform: translateY(6px); } }
-/* closed drift path: starts and finishes on exactly the same spot */
+/* A continuous angle describes a true circle without easing or stationary holds. */
 @keyframes seq-path {
-  0%,12.5%,100% { transform: translate3d(0, 0, 0); }
-  34.375% { transform: translate3d(var(--glide-x), calc(var(--glide-y) * -0.5), -320px); }
-  56.25% { transform: translate3d(0, calc(var(--glide-y) * -1), -700px); }
-  78.125% { transform: translate3d(calc(var(--glide-x) * -1), calc(var(--glide-y) * -0.5), -320px); }
+  from { --orbit-angle: 0deg; }
+  to { --orbit-angle: 360deg; }
 }
 @keyframes seq-shadow {
-  0%,12.5%,100% { transform: scale(.85); opacity: .85; }
-  34.375% { transform: translateX(var(--glide-x)) scale(.6); opacity: .4; }
-  56.25% { transform: scale(.35); opacity: .2; }
-  78.125% { transform: translateX(calc(var(--glide-x) * -1)) scale(.6); opacity: .4; }
+  0%,100% { transform: scale(.85); opacity: .85; }
+  25% { transform: translateX(var(--orbit-radius)) scale(.75); opacity: .65; }
+  50% { transform: scale(.65); opacity: .5; }
+  75% { transform: translateX(calc(var(--orbit-radius) * -1)) scale(.75); opacity: .65; }
 }
 /* turns non-stop; faces front while it opens up, and the loop closes on itself */
 @keyframes seq-turn {
-  0%,12.5% { transform: rotateX(-8deg) rotateY(-22deg) rotateZ(3deg); }
-  5%,7.5% { transform: rotateX(10deg) rotateY(-30deg) rotateZ(-5deg) scale(.8); }
-  34.375% { transform: rotateX(-8deg) rotateY(68deg) rotateZ(3deg); }
-  56.25% { transform: rotateX(-8deg) rotateY(158deg) rotateZ(3deg); }
-  78.125% { transform: rotateX(-8deg) rotateY(248deg) rotateZ(3deg); }
-  100% { transform: rotateX(-8deg) rotateY(338deg) rotateZ(3deg); }
+  from { transform: rotateX(-8deg) rotateY(-22deg) rotateZ(3deg); }
+  to { transform: rotateX(-8deg) rotateY(338deg) rotateZ(3deg); }
 }
 /* exploded view: the screen lifts off and floats above the chassis, the back panel
    drops away below it, the frame layers spread and the board lights up in the middle */
@@ -582,7 +584,7 @@ html.intro-reveal .header-logo { opacity: 1; transition: opacity 0.6s ease 0.34s
   background: linear-gradient(to bottom, transparent, color-mix(in oklab, var(--color-background) 35%, transparent) 30%, color-mix(in oklab, var(--color-background) 85%, transparent) 70%, var(--color-background));
 }
 @media (max-width: 640px) {
-  .stage3d { --glide-x: 90px; --glide-y: 48px; }
+  .stage3d { --orbit-radius: 70px; }
   .phone3d { --w: 140px; --h: 284px; --r: 24px; }
   .p3-emblem { width: 76px; height: 76px; }
 }
