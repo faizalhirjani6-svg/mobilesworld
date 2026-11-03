@@ -93,6 +93,16 @@
 .reveal-y { --from-y: 56px; }
 .reveal.in { opacity: 1; transform: none; }
 
+/* Shop: quick pop whenever a cart quantity or total count changes */
+@keyframes count-pop {
+  from { opacity: 0.3; transform: scale(0.6); }
+  to { opacity: 1; transform: none; }
+}
+.count-pop { display: inline-block; animation: count-pop 0.3s cubic-bezier(.2, .7, .2, 1); }
+@media (prefers-reduced-motion: reduce) {
+  .count-pop { animation: none; }
+}
+
 /* Header tucks itself away going down, and pops straight back coming up */
 .site-header { transition: transform 0.45s cubic-bezier(.2, .7, .2, 1); }
 .site-header.is-hidden { transform: translateY(-100%); }
