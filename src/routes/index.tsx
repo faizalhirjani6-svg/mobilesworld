@@ -240,7 +240,7 @@ function Index() {
           ].map(([src, alt, , , cap]) => (
             <div key={cap as string} className="min-w-0 w-[82vw] shrink-0 sm:w-[50vw] lg:w-[40vw]">
               <figure>
-                <Photo src={src as string} alt={alt as string} w={4} h={3} />
+                <Photo src={src as string} alt={alt as string} w={4} h={3} eager />
                 <figcaption className="mt-3 font-serif text-xl italic text-muted-foreground">{cap as string}</figcaption>
               </figure>
             </div>
