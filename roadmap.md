@@ -1,5 +1,10 @@
 # Security and Netlify readiness
 
+## Cross-device polish
+- [ ] Improve narrow-screen text, header, contact rows, and stable opening height without changing content.
+- [ ] Reduce unnecessary scroll work and pause decorative motion when offscreen.
+- [ ] Verify navigation, photo sliding, and phone animation across phone, tablet, and desktop sizes.
+
 ## iPhone visuals
 - [x] Make shop photos slide automatically in a smooth continuous loop while retaining touch dragging.
 - [x] Enhance all five uploaded shop photos and add them to the shop gallery.
