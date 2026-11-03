@@ -33,10 +33,8 @@ async def check_sequence():
                         depth: new DOMMatrixReadOnly(read('.stage3d-track').transform).m43,
                         x: new DOMMatrixReadOnly(read('.stage3d-track').transform).m41,
                         y: new DOMMatrixReadOnly(read('.stage3d-track').transform).m42,
-                        yaw: (() => {
-                            const m = new DOMMatrixReadOnly(read('.phone3d').transform);
-                            return Math.atan2(m.m31, m.m33) * 180 / Math.PI;
-                        })(),
+                        yaw: parseFloat(read('.phone3d').getPropertyValue('--spin-angle')),
+                        roll: parseFloat(read('.phone3d').getPropertyValue('--tumble-angle')),
                     };
                 }""")
 
@@ -58,8 +56,7 @@ async def check_sequence():
                 angle = 2 * math.pi * time / 8000
                 assert abs(sample['x'] - radius * math.sin(angle)) < .02, f'Orbit circle mismatch: {width} {time} {sample["x"]} expected {radius * math.sin(angle)}'
                 assert abs(sample['depth'] - (radius * (math.cos(angle) - 1) - 45)) < .02, 'Orbit must stay only slightly farther back'
-                hover_height = 32 if width == 360 else 48
-                assert abs(sample['y'] - hover_height * math.sin(angle * 2)) < .02, 'Phone must hover through different vertical positions'
+                assert sample['y'] == 0, 'Phone must tumble rather than move up and down'
                 step = (sample['yaw'] - previous_yaw) % 360
                 assert 10 < step < 13, 'Rotation must advance smoothly without pauses'
                 previous_yaw = sample['yaw']
@@ -69,6 +66,10 @@ async def check_sequence():
             assert middle["path"] != start["path"], "Phone must glide on both screen sizes"
             assert abs(middle['depth'] + radius * 2 + 45) < .02, 'Phone must not retreat too far'
             await page.locator('.stage3d').screenshot(path=f'/tmp/browser/phone/distant-{width}.png')
+            for time, low, high, pose in [(2400, 90, 100, 'sideways'), (4160, 190, 200, 'upside-down')]:
+                await seek(time)
+                assert low < (await state())['roll'] < high, f'Phone must turn {pose}'
+                await page.locator('.stage3d').screenshot(path=f'/tmp/browser/phone/{pose}-{width}.png')
             await seek(8000)
             end = await state()
             # A complete 360-degree turn returns the same orientation.
