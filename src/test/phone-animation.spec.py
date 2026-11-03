@@ -1,9 +1,12 @@
 """Runtime regression checks for the requested phone animation sequence."""
 import asyncio
+import math
+from pathlib import Path
 from playwright.async_api import async_playwright
 
 
 async def check_sequence():
+    Path('/tmp/browser/phone').mkdir(parents=True, exist_ok=True)
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
         for width, height in [(360, 640), (1280, 1800)]:
@@ -28,6 +31,11 @@ async def check_sequence():
                         turn: read('.phone3d').transform,
                         path: read('.stage3d-track').transform,
                         depth: new DOMMatrixReadOnly(read('.stage3d-track').transform).m43,
+                        x: new DOMMatrixReadOnly(read('.stage3d-track').transform).m41,
+                        yaw: (() => {
+                            const m = new DOMMatrixReadOnly(read('.phone3d').transform);
+                            return Math.atan2(m.m31, m.m33) * 180 / Math.PI;
+                        })(),
                     };
                 }""")
 
@@ -41,21 +49,32 @@ async def check_sequence():
             assembled = await state()
             assert assembled["front"] == start["front"], "Phone must reassemble by one second"
             assert assembled["board"] == "0"
-            await seek(4500)
+            radius = 70 if width == 360 else 120
+            previous_yaw = start['yaw']
+            for time in range(250, 8001, 250):
+                await seek(time)
+                sample = await state()
+                angle = 2 * math.pi * time / 8000
+                assert abs(sample['x'] - radius * math.sin(angle)) < .02, 'Orbit must follow a circle without stopping'
+                assert abs(sample['depth'] - radius * (math.cos(angle) - 1)) < .02, 'Orbit must stay at moderate depth'
+                step = (sample['yaw'] - previous_yaw) % 360
+                assert 10 < step < 13, 'Rotation must advance smoothly without pauses'
+                previous_yaw = sample['yaw']
+            await seek(4000)
             middle = await state()
             assert middle["turn"] != assembled["turn"], "Assembled phone must rotate"
             assert middle["path"] != start["path"], "Phone must glide on both screen sizes"
-            assert middle["depth"] < -600, "Phone must orbit far into the distance"
+            assert abs(middle['depth'] + radius * 2) < .02, 'Phone must not retreat too far'
             await page.locator('.stage3d').screenshot(path=f'/tmp/browser/phone/distant-{width}.png')
             await seek(8000)
             end = await state()
             # A complete 360-degree turn returns the same orientation.
-            assert end["turn"] == start["turn"], "Spin must finish at the starting orientation"
+            assert abs(end['yaw'] - start['yaw']) < .02, "Spin must finish at the starting orientation"
             assert end["depth"] == 0, "Phone must return from the distant orbit"
             await seek(8500)
             assert (await state())["board"] == "1", "Disassembly must repeat after the spin"
             await page.locator('.stage3d').screenshot(path=f'/tmp/browser/phone/sequence-{width}.png')
-            print(f"{width}: one-second disassembly/reassembly, gliding full turn, repeated disassembly passed")
+            print(f"{width}: continuous circular orbit, smooth 360 turn, moderate depth and repeated disassembly passed")
             await page.close()
         await browser.close()
 
