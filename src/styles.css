@@ -405,7 +405,7 @@
 html.intro-live .header-logo { opacity: 0; }
 html.intro-reveal .header-logo { opacity: 1; transition: opacity 0.5s ease 0.5s; }
 
-/* Sword: a horizontal lime blade sweeps left-to-right across the logo, cutting it in half */
+/* Swordsman: a stickman with a katana slices through the logo */
 .intro-sword {
   position: absolute;
   inset: 0;
@@ -413,74 +413,90 @@ html.intro-reveal .header-logo { opacity: 1; transition: opacity 0.5s ease 0.5s;
   pointer-events: none;
   overflow: hidden;
 }
-.intro-sword-blade {
+.intro-stickman {
   position: absolute;
   top: 50%;
-  left: -20%;
-  width: 140%;
-  height: 2px;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    color-mix(in oklab, var(--color-primary) 90%, transparent) 20%,
-    var(--color-primary) 50%,
-    color-mix(in oklab, var(--color-primary) 90%, transparent) 80%,
-    transparent 100%
-  );
-  transform: translateY(-50%) scaleX(0);
-  transform-origin: 0 50%;
+  left: 0;
+  width: 320px;
+  height: 200px;
+  margin-top: -100px;
+  transform: translateX(-110%);
   opacity: 0;
-  box-shadow: 0 0 20px color-mix(in oklab, var(--color-primary) 80%, transparent),
-    0 0 50px color-mix(in oklab, var(--color-primary) 40%, transparent);
 }
-.intro-sword-trail {
-  position: absolute;
-  top: 50%;
-  left: -20%;
-  width: 140%;
-  height: 50px;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    color-mix(in oklab, var(--color-primary) 12%, transparent) 30%,
-    color-mix(in oklab, var(--color-primary) 20%, transparent) 50%,
-    color-mix(in oklab, var(--color-primary) 12%, transparent) 70%,
-    transparent 100%
-  );
-  transform: translateY(-50%) scaleX(0);
-  transform-origin: 0 50%;
-  opacity: 0;
-  filter: blur(8px);
+.intro-stickman-svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 8px color-mix(in oklab, var(--color-primary) 25%, transparent));
 }
 
-/* blade fires during the cut phase */
-.intro-splash.is-cut .intro-sword-blade {
-  opacity: 1;
-  animation: sword-sweep 380ms cubic-bezier(.35, 0, .25, 1) both;
+/* glowing cut line that expands from center after the katana passes */
+.intro-cut-line {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-primary) 20%, var(--color-primary) 80%, transparent);
+  box-shadow: 0 0 20px var(--color-primary), 0 0 50px color-mix(in oklab, var(--color-primary) 40%, transparent);
+  transform: translate(-50%, -50%);
+  opacity: 0;
 }
-.intro-splash.is-cut .intro-sword-trail {
-  opacity: 1;
-  animation: sword-trail 420ms cubic-bezier(.35, 0, .25, 1) both;
+
+/* impact flash when katana hits the logo center */
+.intro-cut-flash {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in oklab, var(--color-primary) 70%, transparent), transparent 65%);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  filter: blur(2px);
 }
-.intro-splash.is-split .intro-sword-blade,
-.intro-splash.is-split .intro-sword-trail,
-.intro-splash.is-out .intro-sword-blade,
-.intro-splash.is-out .intro-sword-trail {
+
+/* stickman and cut effects fire during the cut phase */
+.intro-splash.is-cut .intro-stickman {
+  animation: stickman-slash 700ms cubic-bezier(.3, 0, .35, 1) both;
+}
+.intro-splash.is-cut .intro-cut-line {
+  animation: cut-line-expand 500ms ease-out 300ms both;
+}
+.intro-splash.is-cut .intro-cut-flash {
+  animation: cut-flash 350ms ease-out 280ms both;
+}
+.intro-splash.is-split .intro-stickman,
+.intro-splash.is-out .intro-stickman,
+.intro-splash.is-split .intro-cut-line,
+.intro-splash.is-out .intro-cut-line,
+.intro-splash.is-split .intro-cut-flash,
+.intro-splash.is-out .intro-cut-flash {
   opacity: 0;
   transition: opacity 0.2s ease;
 }
 
-@keyframes sword-sweep {
-  0% { transform: translateY(-50%) scaleX(0); opacity: 0; }
-  8% { opacity: 1; }
-  60% { transform: translateY(-50%) scaleX(1); opacity: 1; }
-  100% { transform: translateY(-50%) scaleX(1) translateX(25%); opacity: 0; }
+@keyframes stickman-slash {
+  0%   { transform: translateX(-110%) rotate(0deg); opacity: 0; }
+  8%   { opacity: 1; }
+  35%  { transform: translateX(calc(50vw - 200px)) rotate(-4deg); opacity: 1; }
+  50%  { transform: translateX(calc(50vw - 140px)) rotate(6deg); opacity: 1; }
+  75%  { transform: translateX(80vw) rotate(-2deg); opacity: 0.5; }
+  100% { transform: translateX(120vw) rotate(0deg); opacity: 0; }
 }
-@keyframes sword-trail {
-  0% { transform: translateY(-50%) scaleX(0); opacity: 0; }
-  12% { opacity: 1; }
-  55% { transform: translateY(-50%) scaleX(1); opacity: 0.8; }
-  100% { transform: translateY(-50%) scaleX(1) translateX(25%); opacity: 0; }
+@keyframes cut-line-expand {
+  0%   { width: 0; opacity: 0; }
+  15%  { opacity: 1; }
+  50%  { width: 70vw; opacity: 0.9; }
+  100% { width: 90vw; opacity: 0; }
+}
+@keyframes cut-flash {
+  0%   { width: 0; height: 0; opacity: 0; }
+  25%  { width: 100px; height: 100px; opacity: 0.7; }
+  100% { width: 280px; height: 280px; opacity: 0; }
+}
+@media (max-width: 640px) {
+  .intro-stickman { width: 240px; height: 150px; margin-top: -75px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -676,7 +692,6 @@ html.intro-reveal .header-logo { opacity: 1; transition: opacity 0.5s ease 0.5s;
   0%,12.5%,100% { opacity: 1; transform: translateZ(var(--z)); }
   5%,7.5% { opacity: .12; transform: translateZ(calc(var(--z) * 5)); }
 }
-
 
 
 
