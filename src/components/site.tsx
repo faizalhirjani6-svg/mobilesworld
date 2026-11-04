@@ -339,11 +339,10 @@ export function Parallax({ children, speed = 0.15 }: { children: ReactNode; spee
   return <div ref={ref} className="will-change-transform">{children}</div>;
 }
 
-/* ---------- intro: a sword cuts the logo in half, the top half flies up to become the header logo ---------- */
+/* ---------- intro: the logo takes the screen, then glides up into the header ---------- */
 const INTRO_KEY = "mw-intro-played";
-const INTRO_HOLD = 1600;
-const INTRO_SWORD = 200;
-const INTRO_SPLIT = 1100;
+const INTRO_HOLD = 1250;
+const INTRO_GLIDE = 850;
 const INTRO_WORD_A = "MOBILE";
 const INTRO_WORD_B = "WORLD";
 
@@ -363,20 +362,9 @@ function IntroLetters({ text, offset }: { text: string; offset: number }) {
   );
 }
 
-function IntroWordContent() {
-  return (
-    <>
-      <IntroLetters text={INTRO_WORD_A} offset={0} />
-      <span className="intro-word-b">
-        <IntroLetters text={INTRO_WORD_B} offset={INTRO_WORD_A.length} />
-      </span>
-    </>
-  );
-}
-
 export function Intro() {
   const [playing, setPlaying] = useState(false);
-  const [phase, setPhase] = useState<"idle" | "in" | "cut" | "split" | "out">("idle");
+  const [phase, setPhase] = useState<"idle" | "in" | "glide" | "out">("idle");
   const mark = useRef<HTMLDivElement>(null);
   const word = useRef<HTMLDivElement>(null);
 
@@ -408,28 +396,32 @@ export function Intro() {
       setPlaying(false);
     };
 
-    const doCut = () => {
-      setPhase("cut");
-      timers.push(window.setTimeout(() => {
-        const w = word.current;
-        const target = document.querySelector<HTMLElement>("[data-header-logo]");
-        if (w && target) {
-          const wr = w.getBoundingClientRect();
-          const tr = target.getBoundingClientRect();
-          w.style.setProperty("--fly-x", `${tr.left + tr.width / 2 - (wr.left + wr.width / 2)}px`);
-          w.style.setProperty("--fly-y", `${tr.top + tr.height / 2 - (wr.top + wr.height / 2)}px`);
-          w.style.setProperty("--fly-s", String(Math.max(0.05, tr.width / Math.max(1, wr.width))));
-        }
-        html.classList.add("intro-reveal");
-        setPhase("split");
-      }, 900));
-      timers.push(window.setTimeout(finish, 900 + INTRO_SPLIT));
+    const glide = () => {
+      const m = mark.current;
+      const w = word.current;
+      const target = document.querySelector<HTMLElement>("[data-header-logo]");
+      if (m && w && target) {
+        const mr = m.getBoundingClientRect();
+        const wr = w.getBoundingClientRect();
+        const tr = target.getBoundingClientRect();
+        const cx = wr.left + wr.width / 2;
+        const cy = wr.top + wr.height / 2;
+        m.style.setProperty("--origin-x", `${cx - mr.left}px`);
+        m.style.setProperty("--origin-y", `${cy - mr.top}px`);
+        m.style.setProperty("--glide-x", `${tr.left + tr.width / 2 - cx}px`);
+        m.style.setProperty("--glide-y", `${tr.top + tr.height / 2 - cy}px`);
+        m.style.setProperty("--glide-s", String(Math.max(0.05, tr.width / Math.max(1, wr.width))));
+      }
+      html.classList.add("intro-reveal");
+      setPhase("glide");
+      timers.push(window.setTimeout(() => setPhase("out"), INTRO_GLIDE));
+      timers.push(window.setTimeout(finish, INTRO_GLIDE + 180));
     };
 
     raf = requestAnimationFrame(() => {
       raf = requestAnimationFrame(() => {
         setPhase("in");
-        timers.push(window.setTimeout(doCut, INTRO_HOLD));
+        timers.push(window.setTimeout(glide, INTRO_HOLD));
       });
     });
 
@@ -447,56 +439,13 @@ export function Intro() {
     <div className={`intro-splash is-${phase}`} aria-hidden="true">
       <div className="intro-floor" />
       <div ref={mark} className="intro-mark">
-        <div ref={word} className="intro-word-wrap">
-          <div className="intro-half intro-half-top">
-            <div className="intro-half-inner">
-              <IntroWordContent />
-            </div>
-          </div>
-          <div className="intro-half intro-half-bottom">
-            <div className="intro-half-inner">
-              <IntroWordContent />
-            </div>
-          </div>
+        <div ref={word} className="intro-word">
+          <IntroLetters text={INTRO_WORD_A} offset={0} />
+          <span className="intro-word-b">
+            <IntroLetters text={INTRO_WORD_B} offset={INTRO_WORD_A.length} />
+          </span>
         </div>
         <div className="intro-tag">Phone repair &amp; audio</div>
-      </div>
-      <div className="intro-sword" aria-hidden="true">
-        <div className="intro-stickman">
-          <svg
-            viewBox="0 0 360 240"
-            className="intro-stickman-svg"
-            preserveAspectRatio="xMinYMid meet"
-            style={{ stroke: "var(--color-foreground)", strokeWidth: 3, strokeLinecap: "round", strokeLinejoin: "round", fill: "none" }}
-          >
-            <ellipse cx={20} cy={120} rx={14} ry={30} opacity={0.15} style={{ stroke: "var(--color-primary)", strokeWidth: 6 }} />
-            <ellipse cx={8} cy={120} rx={10} ry={24} opacity={0.08} style={{ stroke: "var(--color-primary)", strokeWidth: 8 }} />
-            <circle cx={52} cy={52} r={3} style={{ stroke: "var(--color-accent)", strokeWidth: 2.5 }} />
-            <line x1={52} y1={55} x2={56} y2={64} strokeWidth={2} style={{ stroke: "var(--color-accent)" }} />
-            <path d="M 30 64 Q 52 42, 74 64 Q 70 60, 52 58 Q 34 60, 30 64" strokeWidth={2.5} style={{ stroke: "var(--color-accent)" }} />
-            <line x1={30} y1={64} x2={74} y2={64} strokeWidth={2} style={{ stroke: "var(--color-accent)", opacity: 0.5 }} />
-            <circle cx={52} cy={72} r={10} />
-            <line x1={48} y1={70} x2={56} y2={71} strokeWidth={2} style={{ stroke: "var(--color-primary)" }} />
-            <line x1={52} y1={82} x2={62} y2={140} strokeWidth={4} />
-            <line x1={55} y1={96} x2={30} y2={110} strokeWidth={3} />
-            <line x1={30} y1={110} x2={18} y2={104} strokeWidth={2.5} />
-            <line x1={58} y1={98} x2={86} y2={108} strokeWidth={3.5} />
-            <line x1={84} y1={102} x2={92} y2={114} strokeWidth={5} style={{ stroke: "var(--color-accent)" }} />
-            <line x1={92} y1={108} x2={350} y2={108} strokeWidth={2.5} style={{ stroke: "var(--color-primary)" }} />
-            <line x1={345} y1={105} x2={355} y2={108} strokeWidth={1.5} style={{ stroke: "var(--color-primary)" }} />
-            <line x1={345} y1={111} x2={355} y2={108} strokeWidth={1.5} style={{ stroke: "var(--color-primary)" }} />
-            <line x1={92} y1={108} x2={350} y2={108} strokeWidth={6} style={{ stroke: "var(--color-primary)", opacity: 0.15 }} />
-            <line x1={62} y1={140} x2={90} y2={195} strokeWidth={3.5} />
-            <line x1={62} y1={140} x2={34} y2={195} strokeWidth={3.5} />
-            <line x1={85} y1={195} x2={98} y2={193} strokeWidth={3} />
-            <line x1={30} y1={195} x2={20} y2={193} strokeWidth={3} />
-          </svg>
-          <span className="intro-speed-lines" />
-        </div>
-        <span className="intro-cut-line" />
-        <span className="intro-cut-flash" />
-        <span className="intro-shockwave" />
-        <span className="intro-sparks" />
       </div>
     </div>
   );
