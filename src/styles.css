@@ -103,6 +103,33 @@
   .count-pop { animation: none; }
 }
 
+/* Shop: add-to-cart celebration — glowing dot flies into the cart, the card flashes, the cart pops */
+.fly-dot {
+  position: fixed;
+  z-index: 60;
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  background: var(--color-primary);
+  box-shadow: 0 0 14px color-mix(in oklab, var(--color-primary) 65%, transparent);
+  pointer-events: none;
+}
+@keyframes card-added {
+  0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--color-primary) 55%, transparent); }
+  100% { box-shadow: 0 0 0 18px transparent; }
+}
+.card-added { animation: card-added 0.75s ease-out; border-color: var(--color-primary); }
+@keyframes cart-pop {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.14); }
+  100% { transform: scale(1); }
+}
+.cart-pop { animation: cart-pop 0.45s cubic-bezier(.2, .7, .2, 1); }
+@media (prefers-reduced-motion: reduce) {
+  .fly-dot { display: none; }
+  .card-added, .cart-pop { animation: none; }
+}
+
 /* Header tucks itself away going down, and pops straight back coming up */
 .site-header { transition: transform 0.45s cubic-bezier(.2, .7, .2, 1); }
 .site-header.is-hidden { transform: translateY(-100%); }
