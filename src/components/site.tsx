@@ -341,9 +341,9 @@ export function Parallax({ children, speed = 0.15 }: { children: ReactNode; spee
 
 /* ---------- intro: a sword cuts the logo in half, the top half flies up to become the header logo ---------- */
 const INTRO_KEY = "mw-intro-played";
-const INTRO_HOLD = 1250;
+const INTRO_HOLD = 1600;
 const INTRO_SWORD = 200;
-const INTRO_SPLIT = 900;
+const INTRO_SPLIT = 1100;
 const INTRO_WORD_A = "MOBILE";
 const INTRO_WORD_B = "WORLD";
 
@@ -422,8 +422,8 @@ export function Intro() {
         }
         html.classList.add("intro-reveal");
         setPhase("split");
-      }, 650));
-      timers.push(window.setTimeout(finish, 650 + INTRO_SPLIT));
+      }, 900));
+      timers.push(window.setTimeout(finish, 900 + INTRO_SPLIT));
     };
 
     raf = requestAnimationFrame(() => {
