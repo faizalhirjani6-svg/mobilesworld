@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Check, Minus, Plus } from "lucide-react";
+import { Minus, Plus } from "lucide-react";
 import { Header, Footer, Reveal } from "@/components/site";
 import { ShopCartSheet } from "@/components/shop-cart-sheet";
 import { Button } from "@/components/ui/button";
