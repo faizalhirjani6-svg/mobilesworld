@@ -261,8 +261,8 @@
   transition: opacity 0.7s ease;
 }
 .intro-splash.is-in::before { opacity: 1; }
-.intro-splash.is-glide,
-.intro-splash.is-out { opacity: 0; }
+.intro-splash.is-split,
+.intro-splash.is-out { opacity: 0; transition: opacity 0.6s ease 0.3s; }
 
 /* receding grid floor — the depth cue */
 .intro-floor {
@@ -284,7 +284,8 @@
   transition: opacity 0.9s ease 0.1s;
 }
 .intro-splash.is-in .intro-floor { opacity: 0.45; }
-.intro-splash.is-glide .intro-floor,
+.intro-splash.is-cut .intro-floor,
+.intro-splash.is-split .intro-floor,
 .intro-splash.is-out .intro-floor { opacity: 0; transition: opacity 0.5s ease; }
 @keyframes floor-run { to { background-position: 0 0, 0 880px; } }
 
@@ -295,16 +296,38 @@
   transform-origin: var(--origin-x, 50%) var(--origin-y, 50%);
 }
 
-.intro-word {
+/* the wordmark halves sit stacked; each clips half the text and they split apart on the cut */
+.intro-word-wrap {
+  position: relative;
   font-family: var(--font-display);
   font-weight: 900;
   font-size: clamp(1.9rem, 9.5vw, 5.4rem);
   letter-spacing: -0.03em;
   line-height: 1;
   white-space: nowrap;
-  color: var(--color-foreground);
   transform-style: preserve-3d;
 }
+
+.intro-half {
+  position: relative;
+  height: 0.5em;
+  overflow: hidden;
+}
+.intro-half-bottom { margin-top: -0.5em; }
+
+.intro-half-inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  white-space: nowrap;
+}
+.intro-half-top .intro-half-inner { color: var(--color-foreground); }
+.intro-half-bottom .intro-half-inner {
+  color: var(--color-foreground);
+  top: -0.5em;
+}
+
+/* the WORLD half is lime in both copies */
 .intro-word-b {
   display: inline-block;
   color: var(--color-primary);
@@ -333,20 +356,24 @@
   100% { opacity: 1; transform: rotateX(0deg) translateZ(0); }
 }
 
-/* the mark does a full 3D turn on the way out, resolving square so it lands clean */
-@keyframes intro-fly {
-  0% { transform: perspective(900px) rotateY(0deg) rotateX(0deg) translateZ(0); }
-  42% { transform: perspective(900px) rotateY(-34deg) rotateX(12deg) translateZ(-190px); }
-  100% { transform: perspective(900px) rotateY(0deg) rotateX(0deg) translateZ(0); }
+/* after the sword cuts: top half flies up to the header, bottom half drops and fades */
+.intro-splash.is-split .intro-half-top {
+  animation: half-fly-up 900ms cubic-bezier(.5, 0, .25, 1) both;
 }
-.intro-splash.is-glide .intro-word,
-.intro-splash.is-out .intro-word {
-  animation: intro-fly 850ms cubic-bezier(.5, 0, .25, 1) both;
+.intro-splash.is-split .intro-half-bottom {
+  animation: half-drop-down 900ms cubic-bezier(.4, 0, .3, 1) both;
 }
-.intro-splash.is-glide .intro-mark,
-.intro-splash.is-out .intro-mark {
-  transform: translate(var(--glide-x, 0px), var(--glide-y, 0px)) scale(var(--glide-s, 1));
-  transition: transform 850ms cubic-bezier(.5, 0, .25, 1);
+@keyframes half-fly-up {
+  0% { transform: translateY(0); opacity: 1; }
+  100% {
+    transform: translate(var(--fly-x, 0px), calc(var(--fly-y, -200px) - 50%)) scale(var(--fly-s, 0.25));
+    opacity: 0;
+  }
+}
+@keyframes half-drop-down {
+  0% { transform: translateY(0); opacity: 1; }
+  30% { transform: translateY(8px); opacity: 0.7; }
+  100% { transform: translateY(80px) rotateX(40deg); opacity: 0; }
 }
 
 .intro-tag {
@@ -364,7 +391,8 @@
     transform 0.6s cubic-bezier(.16, 1.1, .3, 1) 0.5s;
 }
 .intro-splash.is-in .intro-tag { opacity: 1; transform: none; }
-.intro-splash.is-glide .intro-tag,
+.intro-splash.is-cut .intro-tag,
+.intro-splash.is-split .intro-tag,
 .intro-splash.is-out .intro-tag {
   opacity: 0;
   transform: translateY(-14px) rotateX(55deg);
@@ -373,92 +401,91 @@
     transform 0.4s ease;
 }
 
-/* The real header logo waits behind the splash, then fades in as the intro lands */
+/* The real header logo waits behind the splash, then fades in as the top half lands */
 html.intro-live .header-logo { opacity: 0; }
-html.intro-reveal .header-logo { opacity: 1; transition: opacity 0.6s ease 0.34s; }
+html.intro-reveal .header-logo { opacity: 1; transition: opacity 0.5s ease 0.5s; }
 
-/* Slash cut: a diagonal lime blade sweeps across the logo mid-intro, leaving a glowing trail */
-.intro-slash {
+/* Sword: a horizontal lime blade sweeps left-to-right across the logo, cutting it in half */
+.intro-sword {
   position: absolute;
   inset: 0;
   z-index: 101;
   pointer-events: none;
   overflow: hidden;
 }
-.intro-slash-blade {
+.intro-sword-blade {
   position: absolute;
   top: 50%;
-  left: -30%;
-  width: 160%;
-  height: 3px;
+  left: -20%;
+  width: 140%;
+  height: 2px;
   background: linear-gradient(
     90deg,
     transparent 0%,
-    color-mix(in oklab, var(--color-primary) 85%, transparent) 30%,
+    color-mix(in oklab, var(--color-primary) 90%, transparent) 20%,
     var(--color-primary) 50%,
-    color-mix(in oklab, var(--color-primary) 85%, transparent) 70%,
+    color-mix(in oklab, var(--color-primary) 90%, transparent) 80%,
     transparent 100%
   );
-  transform: translateY(-50%) rotate(-22deg) scaleX(0);
+  transform: translateY(-50%) scaleX(0);
   transform-origin: 0 50%;
   opacity: 0;
-  box-shadow: 0 0 18px color-mix(in oklab, var(--color-primary) 70%, transparent),
-    0 0 40px color-mix(in oklab, var(--color-primary) 35%, transparent);
+  box-shadow: 0 0 20px color-mix(in oklab, var(--color-primary) 80%, transparent),
+    0 0 50px color-mix(in oklab, var(--color-primary) 40%, transparent);
 }
-.intro-slash-glow {
+.intro-sword-trail {
   position: absolute;
   top: 50%;
-  left: -30%;
-  width: 160%;
-  height: 40px;
+  left: -20%;
+  width: 140%;
+  height: 50px;
   background: linear-gradient(
     90deg,
     transparent 0%,
-    color-mix(in oklab, var(--color-primary) 14%, transparent) 35%,
-    color-mix(in oklab, var(--color-primary) 22%, transparent) 50%,
-    color-mix(in oklab, var(--color-primary) 14%, transparent) 65%,
+    color-mix(in oklab, var(--color-primary) 12%, transparent) 30%,
+    color-mix(in oklab, var(--color-primary) 20%, transparent) 50%,
+    color-mix(in oklab, var(--color-primary) 12%, transparent) 70%,
     transparent 100%
   );
-  transform: translateY(-50%) rotate(-22deg) scaleX(0);
+  transform: translateY(-50%) scaleX(0);
   transform-origin: 0 50%;
   opacity: 0;
-  filter: blur(6px);
+  filter: blur(8px);
 }
 
-/* blade fires while the wordmark is on screen, during the hold phase */
-.intro-splash.is-in .intro-slash-blade {
+/* blade fires during the cut phase */
+.intro-splash.is-cut .intro-sword-blade {
   opacity: 1;
-  animation: slash-cut 480ms cubic-bezier(.4, 0, .2, 1) 820ms both;
+  animation: sword-sweep 380ms cubic-bezier(.35, 0, .25, 1) both;
 }
-.intro-splash.is-in .intro-slash-glow {
+.intro-splash.is-cut .intro-sword-trail {
   opacity: 1;
-  animation: slash-glow 520ms cubic-bezier(.4, 0, .2, 1) 800ms both;
+  animation: sword-trail 420ms cubic-bezier(.35, 0, .25, 1) both;
 }
-.intro-splash.is-glide .intro-slash-blade,
-.intro-splash.is-glide .intro-slash-glow,
-.intro-splash.is-out .intro-slash-blade,
-.intro-splash.is-out .intro-slash-glow {
+.intro-splash.is-split .intro-sword-blade,
+.intro-splash.is-split .intro-sword-trail,
+.intro-splash.is-out .intro-sword-blade,
+.intro-splash.is-out .intro-sword-trail {
   opacity: 0;
-  transition: opacity 0.25s ease;
+  transition: opacity 0.2s ease;
 }
 
-@keyframes slash-cut {
-  0% { transform: translateY(-50%) rotate(-22deg) scaleX(0); opacity: 0; }
-  10% { opacity: 1; }
-  55% { transform: translateY(-50%) rotate(-22deg) scaleX(1); opacity: 1; }
-  80% { opacity: 0.7; }
-  100% { transform: translateY(-50%) rotate(-22deg) scaleX(1) translateX(40%); opacity: 0; }
+@keyframes sword-sweep {
+  0% { transform: translateY(-50%) scaleX(0); opacity: 0; }
+  8% { opacity: 1; }
+  60% { transform: translateY(-50%) scaleX(1); opacity: 1; }
+  100% { transform: translateY(-50%) scaleX(1) translateX(25%); opacity: 0; }
 }
-@keyframes slash-glow {
-  0% { transform: translateY(-50%) rotate(-22deg) scaleX(0); opacity: 0; }
-  15% { opacity: 1; }
-  50% { transform: translateY(-50%) rotate(-22deg) scaleX(1); opacity: 0.8; }
-  100% { transform: translateY(-50%) rotate(-22deg) scaleX(1) translateX(40%); opacity: 0; }
+@keyframes sword-trail {
+  0% { transform: translateY(-50%) scaleX(0); opacity: 0; }
+  12% { opacity: 1; }
+  55% { transform: translateY(-50%) scaleX(1); opacity: 0.8; }
+  100% { transform: translateY(-50%) scaleX(1) translateX(25%); opacity: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .intro-splash { display: none; }
-  .intro-slash { display: none; }
+  .intro-sword { display: none; }
   html.intro-live .header-logo { opacity: 1; }
 }
 
@@ -649,6 +676,7 @@ html.intro-reveal .header-logo { opacity: 1; transition: opacity 0.6s ease 0.34s
   0%,12.5%,100% { opacity: 1; transform: translateZ(var(--z)); }
   5%,7.5% { opacity: .12; transform: translateZ(calc(var(--z) * 5)); }
 }
+
 
 
 
