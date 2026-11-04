@@ -96,7 +96,7 @@ function ShopPage() {
             />
           </div>
         </Reveal>
-        <ul className="mt-10 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
+        <ul className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
           {SHOP_PRODUCTS.map((product, i) => {
             const quantity = quantities.get(product.id) ?? 0;
             return (
@@ -109,13 +109,13 @@ function ShopPage() {
                   >
                     <div className="skeleton min-h-0 w-full flex-1" aria-hidden />
                     <div className="flex flex-col gap-1.5 p-2.5 sm:gap-2.5 sm:p-4">
-                      <h2 className="truncate text-xs font-semibold sm:min-h-[2.5rem] sm:line-clamp-2 sm:text-base">
+                      <h2 className="truncate text-sm font-semibold sm:min-h-[2.5rem] sm:line-clamp-2 sm:text-base">
                         {product.name}
                       </h2>
-                      <p className="text-xs font-bold text-primary sm:text-sm">{formatPrice(product.price)}</p>
+                      <p className="text-sm font-bold text-primary">{formatPrice(product.price)}</p>
                       {quantity === 0 ? (
                         <Button
-                          className="h-8 w-full text-xs sm:h-9 sm:text-sm"
+                          className="h-9 w-full text-sm"
                           onClick={(e) => addToCart(product, e.currentTarget)}
                         >
                           Add to cart
@@ -125,7 +125,7 @@ function ShopPage() {
                           <Button
                             size="icon"
                             variant="ghost"
-                            className="h-8 w-8 text-white hover:bg-white/20 hover:text-white sm:h-9 sm:w-9"
+                            className="text-white hover:bg-white/20 hover:text-white"
                             aria-label={`Remove one ${product.name} from cart`}
                             onClick={() => {
                               setQuantity(product.id, quantity - 1);
@@ -134,13 +134,13 @@ function ShopPage() {
                           >
                             <Minus className="h-4 w-4" aria-hidden />
                           </Button>
-                          <span key={quantity} className="count-pop text-xs font-semibold sm:text-sm" aria-live="polite">
+                          <span key={quantity} className="count-pop text-sm font-semibold" aria-live="polite">
                             In cart: {quantity}
                           </span>
                           <Button
                             size="icon"
                             variant="ghost"
-                            className="h-8 w-8 text-white hover:bg-white/20 hover:text-white sm:h-9 sm:w-9"
+                            className="text-white hover:bg-white/20 hover:text-white"
                             aria-label={`Add one more ${product.name} to cart`}
                             onClick={(e) => addToCart(product, e.currentTarget)}
                           >
