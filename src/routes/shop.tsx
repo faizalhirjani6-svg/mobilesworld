@@ -108,7 +108,7 @@ function ShopPage() {
                     }`}
                   >
                     <div className="skeleton min-h-0 w-full flex-1" aria-hidden />
-                    <div className="flex flex-col gap-1.5 p-2.5 sm:gap-2.5 sm:p-4">
+                    <div className="flex flex-col gap-2 p-4 sm:gap-2.5">
                       <h2 className="truncate text-sm font-semibold sm:min-h-[2.5rem] sm:line-clamp-2 sm:text-base">
                         {product.name}
                       </h2>
