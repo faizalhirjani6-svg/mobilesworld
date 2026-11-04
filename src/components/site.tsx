@@ -447,6 +447,10 @@ export function Intro() {
         </div>
         <div className="intro-tag">Phone repair &amp; audio</div>
       </div>
+      <div className="intro-slash" aria-hidden="true">
+        <span className="intro-slash-blade" />
+        <span className="intro-slash-glow" />
+      </div>
     </div>
   );
 }
