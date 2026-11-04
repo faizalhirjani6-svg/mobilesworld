@@ -339,10 +339,11 @@ export function Parallax({ children, speed = 0.15 }: { children: ReactNode; spee
   return <div ref={ref} className="will-change-transform">{children}</div>;
 }
 
-/* ---------- intro: the logo takes the screen, then glides up into the header ---------- */
+/* ---------- intro: a sword cuts the logo in half, the top half flies up to become the header logo ---------- */
 const INTRO_KEY = "mw-intro-played";
 const INTRO_HOLD = 1250;
-const INTRO_GLIDE = 850;
+const INTRO_SWORD = 420;
+const INTRO_SPLIT = 900;
 const INTRO_WORD_A = "MOBILE";
 const INTRO_WORD_B = "WORLD";
 
@@ -362,9 +363,20 @@ function IntroLetters({ text, offset }: { text: string; offset: number }) {
   );
 }
 
+function IntroWordContent() {
+  return (
+    <>
+      <IntroLetters text={INTRO_WORD_A} offset={0} />
+      <span className="intro-word-b">
+        <IntroLetters text={INTRO_WORD_B} offset={INTRO_WORD_A.length} />
+      </span>
+    </>
+  );
+}
+
 export function Intro() {
   const [playing, setPlaying] = useState(false);
-  const [phase, setPhase] = useState<"idle" | "in" | "glide" | "out">("idle");
+  const [phase, setPhase] = useState<"idle" | "in" | "cut" | "split" | "out">("idle");
   const mark = useRef<HTMLDivElement>(null);
   const word = useRef<HTMLDivElement>(null);
 
@@ -396,32 +408,28 @@ export function Intro() {
       setPlaying(false);
     };
 
-    const glide = () => {
-      const m = mark.current;
-      const w = word.current;
-      const target = document.querySelector<HTMLElement>("[data-header-logo]");
-      if (m && w && target) {
-        const mr = m.getBoundingClientRect();
-        const wr = w.getBoundingClientRect();
-        const tr = target.getBoundingClientRect();
-        const cx = wr.left + wr.width / 2;
-        const cy = wr.top + wr.height / 2;
-        m.style.setProperty("--origin-x", `${cx - mr.left}px`);
-        m.style.setProperty("--origin-y", `${cy - mr.top}px`);
-        m.style.setProperty("--glide-x", `${tr.left + tr.width / 2 - cx}px`);
-        m.style.setProperty("--glide-y", `${tr.top + tr.height / 2 - cy}px`);
-        m.style.setProperty("--glide-s", String(Math.max(0.05, tr.width / Math.max(1, wr.width))));
-      }
-      html.classList.add("intro-reveal");
-      setPhase("glide");
-      timers.push(window.setTimeout(() => setPhase("out"), INTRO_GLIDE));
-      timers.push(window.setTimeout(finish, INTRO_GLIDE + 180));
+    const doCut = () => {
+      setPhase("cut");
+      timers.push(window.setTimeout(() => {
+        const w = word.current;
+        const target = document.querySelector<HTMLElement>("[data-header-logo]");
+        if (w && target) {
+          const wr = w.getBoundingClientRect();
+          const tr = target.getBoundingClientRect();
+          w.style.setProperty("--fly-x", `${tr.left + tr.width / 2 - (wr.left + wr.width / 2)}px`);
+          w.style.setProperty("--fly-y", `${tr.top + tr.height / 2 - (wr.top + wr.height / 2)}px`);
+          w.style.setProperty("--fly-s", String(Math.max(0.05, tr.width / Math.max(1, wr.width))));
+        }
+        html.classList.add("intro-reveal");
+        setPhase("split");
+      }, INTRO_SWORD + 200));
+      timers.push(window.setTimeout(finish, INTRO_SWORD + INTRO_SPLIT + 200));
     };
 
     raf = requestAnimationFrame(() => {
       raf = requestAnimationFrame(() => {
         setPhase("in");
-        timers.push(window.setTimeout(glide, INTRO_HOLD));
+        timers.push(window.setTimeout(doCut, INTRO_HOLD));
       });
     });
 
@@ -439,17 +447,23 @@ export function Intro() {
     <div className={`intro-splash is-${phase}`} aria-hidden="true">
       <div className="intro-floor" />
       <div ref={mark} className="intro-mark">
-        <div ref={word} className="intro-word">
-          <IntroLetters text={INTRO_WORD_A} offset={0} />
-          <span className="intro-word-b">
-            <IntroLetters text={INTRO_WORD_B} offset={INTRO_WORD_A.length} />
-          </span>
+        <div ref={word} className="intro-word-wrap">
+          <div className="intro-half intro-half-top">
+            <div className="intro-half-inner">
+              <IntroWordContent />
+            </div>
+          </div>
+          <div className="intro-half intro-half-bottom">
+            <div className="intro-half-inner">
+              <IntroWordContent />
+            </div>
+          </div>
         </div>
         <div className="intro-tag">Phone repair &amp; audio</div>
       </div>
-      <div className="intro-slash" aria-hidden="true">
-        <span className="intro-slash-blade" />
-        <span className="intro-slash-glow" />
+      <div className="intro-sword" aria-hidden="true">
+        <span className="intro-sword-blade" />
+        <span className="intro-sword-trail" />
       </div>
     </div>
   );
