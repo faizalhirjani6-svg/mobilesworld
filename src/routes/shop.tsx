@@ -81,7 +81,7 @@ function ShopPage() {
   return (
     <div className="min-h-screen">
       <Header />
-      <main className="mx-auto max-w-6xl px-5 py-16">
+      <main className="mx-auto max-w-6xl px-4 py-16 sm:px-5">
         <Reveal dir="up">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
@@ -96,7 +96,7 @@ function ShopPage() {
             />
           </div>
         </Reveal>
-        <ul className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
+        <ul className="mt-10 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
           {SHOP_PRODUCTS.map((product, i) => {
             const quantity = quantities.get(product.id) ?? 0;
             return (
@@ -108,7 +108,7 @@ function ShopPage() {
                     }`}
                   >
                     <div className="skeleton min-h-0 w-full flex-1" aria-hidden />
-                    <div className="flex flex-col gap-2 p-4 sm:gap-2.5">
+                    <div className="flex flex-col gap-2 p-3 sm:gap-2.5 sm:p-4">
                       <h2 className="truncate text-sm font-semibold sm:min-h-[2.5rem] sm:line-clamp-2 sm:text-base">
                         {product.name}
                       </h2>
