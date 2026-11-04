@@ -1,5 +1,6 @@
+import { useEffect, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Minus, Plus } from "lucide-react";
+import { Check, Minus, Plus } from "lucide-react";
 import { Header, Footer, Reveal } from "@/components/site";
 import { ShopCartSheet } from "@/components/shop-cart-sheet";
 import { Button } from "@/components/ui/button";
@@ -21,13 +22,60 @@ export const Route = createFileRoute("/shop")({
   component: ShopPage,
 });
 
+/** Sends a small glowing dot arcing from the product card into the cart button. */
+function flyToCart(card: HTMLElement) {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const target = document.querySelector<HTMLElement>("[data-cart-trigger]");
+  if (!target) return;
+
+  const from = card.getBoundingClientRect();
+  const to = target.getBoundingClientRect();
+  const startX = from.left + from.width / 2;
+  const startY = from.top + from.height * 0.3;
+  const endX = to.left + to.width / 2;
+  const endY = to.top + to.height / 2;
+
+  const dot = document.createElement("span");
+  dot.className = "fly-dot";
+  dot.style.left = `${startX - 7}px`;
+  dot.style.top = `${startY - 7}px`;
+  document.body.appendChild(dot);
+
+  const dx = endX - startX;
+  const dy = endY - startY;
+  const flight = dot.animate(
+    [
+      { transform: "translate(0, 0) scale(1)", opacity: 1 },
+      { transform: `translate(${dx * 0.55}px, ${dy * 0.55 - 90}px) scale(0.9)`, offset: 0.55 },
+      { transform: `translate(${dx}px, ${dy}px) scale(0.25)`, opacity: 0.2 },
+    ],
+    { duration: 650, easing: "cubic-bezier(.3, .7, .4, 1)" },
+  );
+  flight.onfinish = () => {
+    dot.remove();
+    target.classList.remove("cart-pop");
+    void target.offsetWidth;
+    target.classList.add("cart-pop");
+    target.addEventListener("animationend", () => target.classList.remove("cart-pop"), { once: true });
+  };
+}
+
 function ShopPage() {
   const { lines, add, setQuantity, itemCount, subtotal } = useCart();
   const quantities = new Map(lines.map((line) => [line.product.id, line.quantity]));
+  const [justAdded, setJustAdded] = useState<string | null>(null);
+  const addedTimer = useRef<number | undefined>(undefined);
 
-  const addToCart = (product: ShopProduct) => {
+  useEffect(() => () => window.clearTimeout(addedTimer.current), []);
+
+  const addToCart = (product: ShopProduct, origin?: HTMLElement | null) => {
     add(product);
     playAddToCartSound();
+    setJustAdded(product.id);
+    window.clearTimeout(addedTimer.current);
+    addedTimer.current = window.setTimeout(() => setJustAdded(null), 750);
+    const card = origin?.closest("article");
+    if (card instanceof HTMLElement) flyToCart(card);
   };
 
   return (
@@ -54,13 +102,22 @@ function ShopPage() {
             return (
               <li key={product.id} className="flex">
                 <Reveal dir="y" delay={i * 60} className="flex w-full">
-                  <article className="flex w-full flex-col overflow-hidden rounded-lg border bg-card text-card-foreground transition-shadow duration-300 hover:-translate-y-1 hover:shadow-md">
-                    <div className="skeleton aspect-square w-full" aria-hidden />
-                    <div className="flex flex-1 flex-col gap-3 p-4">
-                      <h2 className="line-clamp-2 min-h-[2.5rem] text-sm font-semibold sm:text-base">{product.name}</h2>
-                      <p className="mt-auto text-sm font-bold text-primary">{formatPrice(product.price)}</p>
+                  <article
+                    className={`flex aspect-square w-full flex-col overflow-hidden rounded-lg border bg-card text-card-foreground transition-shadow duration-300 hover:-translate-y-1 hover:shadow-md ${
+                      justAdded === product.id ? "card-added" : ""
+                    }`}
+                  >
+                    <div className="skeleton min-h-0 w-full flex-1" aria-hidden />
+                    <div className="flex flex-col gap-1.5 p-2.5 sm:gap-2.5 sm:p-4">
+                      <h2 className="truncate text-xs font-semibold sm:min-h-[2.5rem] sm:line-clamp-2 sm:text-base">
+                        {product.name}
+                      </h2>
+                      <p className="text-xs font-bold text-primary sm:text-sm">{formatPrice(product.price)}</p>
                       {quantity === 0 ? (
-                        <Button className="w-full" onClick={() => addToCart(product)}>
+                        <Button
+                          className="h-8 w-full text-xs sm:h-9 sm:text-sm"
+                          onClick={(e) => addToCart(product, e.currentTarget)}
+                        >
                           Add to cart
                         </Button>
                       ) : (
@@ -68,7 +125,7 @@ function ShopPage() {
                           <Button
                             size="icon"
                             variant="ghost"
-                            className="text-white hover:bg-white/20 hover:text-white"
+                            className="h-8 w-8 text-white hover:bg-white/20 hover:text-white sm:h-9 sm:w-9"
                             aria-label={`Remove one ${product.name} from cart`}
                             onClick={() => {
                               setQuantity(product.id, quantity - 1);
@@ -77,15 +134,15 @@ function ShopPage() {
                           >
                             <Minus className="h-4 w-4" aria-hidden />
                           </Button>
-                          <span key={quantity} className="count-pop text-sm font-semibold" aria-live="polite">
+                          <span key={quantity} className="count-pop text-xs font-semibold sm:text-sm" aria-live="polite">
                             In cart: {quantity}
                           </span>
                           <Button
                             size="icon"
                             variant="ghost"
-                            className="text-white hover:bg-white/20 hover:text-white"
+                            className="h-8 w-8 text-white hover:bg-white/20 hover:text-white sm:h-9 sm:w-9"
                             aria-label={`Add one more ${product.name} to cart`}
-                            onClick={() => addToCart(product)}
+                            onClick={(e) => addToCart(product, e.currentTarget)}
                           >
                             <Plus className="h-4 w-4" aria-hidden />
                           </Button>

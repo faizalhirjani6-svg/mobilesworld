@@ -26,7 +26,7 @@ export function ShopCartSheet({
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline" className="gap-2">
+        <Button variant="outline" className="gap-2" data-cart-trigger>
           <ShoppingBag className="h-4 w-4" aria-hidden />
           Cart (<span key={itemCount} className="count-pop">{itemCount}</span>)
         </Button>
