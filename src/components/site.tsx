@@ -342,7 +342,7 @@ export function Parallax({ children, speed = 0.15 }: { children: ReactNode; spee
 /* ---------- intro: a sword cuts the logo in half, the top half flies up to become the header logo ---------- */
 const INTRO_KEY = "mw-intro-played";
 const INTRO_HOLD = 1250;
-const INTRO_SWORD = 420;
+const INTRO_SWORD = 200;
 const INTRO_SPLIT = 900;
 const INTRO_WORD_A = "MOBILE";
 const INTRO_WORD_B = "WORLD";
@@ -422,8 +422,8 @@ export function Intro() {
         }
         html.classList.add("intro-reveal");
         setPhase("split");
-      }, INTRO_SWORD + 200));
-      timers.push(window.setTimeout(finish, INTRO_SWORD + INTRO_SPLIT + 200));
+      }, 650));
+      timers.push(window.setTimeout(finish, 650 + INTRO_SPLIT));
     };
 
     raf = requestAnimationFrame(() => {
@@ -462,8 +462,28 @@ export function Intro() {
         <div className="intro-tag">Phone repair &amp; audio</div>
       </div>
       <div className="intro-sword" aria-hidden="true">
-        <span className="intro-sword-blade" />
-        <span className="intro-sword-trail" />
+        <div className="intro-stickman">
+          <svg
+            viewBox="0 0 320 200"
+            className="intro-stickman-svg"
+            preserveAspectRatio="xMinYMid meet"
+            style={{ stroke: "var(--color-foreground)", strokeWidth: 3, strokeLinecap: "round", fill: "none" }}
+          >
+            <path d="M 38 72 Q 20 78, 6 70 Q 2 66, 4 72" opacity={0.65} style={{ stroke: "var(--color-primary)" }} />
+            <circle cx={48} cy={66} r={11} />
+            <line x1={37} y1={64} x2={59} y2={64} strokeWidth={2.5} style={{ stroke: "var(--color-primary)" }} />
+            <line x1={48} y1={77} x2={48} y2={130} strokeWidth={3.5} />
+            <line x1={48} y1={92} x2={28} y2={112} />
+            <line x1={48} y1={92} x2={78} y2={100} />
+            <line x1={78} y1={100} x2={90} y2={100} strokeWidth={5} style={{ stroke: "var(--color-accent)" }} />
+            <line x1={90} y1={95} x2={90} y2={105} strokeWidth={3} style={{ stroke: "var(--color-accent)" }} />
+            <line x1={90} y1={100} x2={315} y2={100} strokeWidth={2.5} style={{ stroke: "var(--color-primary)" }} />
+            <line x1={48} y1={130} x2={70} y2={178} />
+            <line x1={48} y1={130} x2={28} y2={178} />
+          </svg>
+        </div>
+        <span className="intro-cut-line" />
+        <span className="intro-cut-flash" />
       </div>
     </div>
   );
