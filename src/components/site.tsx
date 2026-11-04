@@ -464,26 +464,39 @@ export function Intro() {
       <div className="intro-sword" aria-hidden="true">
         <div className="intro-stickman">
           <svg
-            viewBox="0 0 320 200"
+            viewBox="0 0 360 240"
             className="intro-stickman-svg"
             preserveAspectRatio="xMinYMid meet"
-            style={{ stroke: "var(--color-foreground)", strokeWidth: 3, strokeLinecap: "round", fill: "none" }}
+            style={{ stroke: "var(--color-foreground)", strokeWidth: 3, strokeLinecap: "round", strokeLinejoin: "round", fill: "none" }}
           >
-            <path d="M 38 72 Q 20 78, 6 70 Q 2 66, 4 72" opacity={0.65} style={{ stroke: "var(--color-primary)" }} />
-            <circle cx={48} cy={66} r={11} />
-            <line x1={37} y1={64} x2={59} y2={64} strokeWidth={2.5} style={{ stroke: "var(--color-primary)" }} />
-            <line x1={48} y1={77} x2={48} y2={130} strokeWidth={3.5} />
-            <line x1={48} y1={92} x2={28} y2={112} />
-            <line x1={48} y1={92} x2={78} y2={100} />
-            <line x1={78} y1={100} x2={90} y2={100} strokeWidth={5} style={{ stroke: "var(--color-accent)" }} />
-            <line x1={90} y1={95} x2={90} y2={105} strokeWidth={3} style={{ stroke: "var(--color-accent)" }} />
-            <line x1={90} y1={100} x2={315} y2={100} strokeWidth={2.5} style={{ stroke: "var(--color-primary)" }} />
-            <line x1={48} y1={130} x2={70} y2={178} />
-            <line x1={48} y1={130} x2={28} y2={178} />
+            <ellipse cx={20} cy={120} rx={14} ry={30} opacity={0.15} style={{ stroke: "var(--color-primary)", strokeWidth: 6 }} />
+            <ellipse cx={8} cy={120} rx={10} ry={24} opacity={0.08} style={{ stroke: "var(--color-primary)", strokeWidth: 8 }} />
+            <circle cx={52} cy={52} r={3} style={{ stroke: "var(--color-accent)", strokeWidth: 2.5 }} />
+            <line x1={52} y1={55} x2={56} y2={64} strokeWidth={2} style={{ stroke: "var(--color-accent)" }} />
+            <path d="M 30 64 Q 52 42, 74 64 Q 70 60, 52 58 Q 34 60, 30 64" strokeWidth={2.5} style={{ stroke: "var(--color-accent)" }} />
+            <line x1={30} y1={64} x2={74} y2={64} strokeWidth={2} style={{ stroke: "var(--color-accent)", opacity: 0.5 }} />
+            <circle cx={52} cy={72} r={10} />
+            <line x1={48} y1={70} x2={56} y2={71} strokeWidth={2} style={{ stroke: "var(--color-primary)" }} />
+            <line x1={52} y1={82} x2={62} y2={140} strokeWidth={4} />
+            <line x1={55} y1={96} x2={30} y2={110} strokeWidth={3} />
+            <line x1={30} y1={110} x2={18} y2={104} strokeWidth={2.5} />
+            <line x1={58} y1={98} x2={86} y2={108} strokeWidth={3.5} />
+            <line x1={84} y1={102} x2={92} y2={114} strokeWidth={5} style={{ stroke: "var(--color-accent)" }} />
+            <line x1={92} y1={108} x2={350} y2={108} strokeWidth={2.5} style={{ stroke: "var(--color-primary)" }} />
+            <line x1={345} y1={105} x2={355} y2={108} strokeWidth={1.5} style={{ stroke: "var(--color-primary)" }} />
+            <line x1={345} y1={111} x2={355} y2={108} strokeWidth={1.5} style={{ stroke: "var(--color-primary)" }} />
+            <line x1={92} y1={108} x2={350} y2={108} strokeWidth={6} style={{ stroke: "var(--color-primary)", opacity: 0.15 }} />
+            <line x1={62} y1={140} x2={90} y2={195} strokeWidth={3.5} />
+            <line x1={62} y1={140} x2={34} y2={195} strokeWidth={3.5} />
+            <line x1={85} y1={195} x2={98} y2={193} strokeWidth={3} />
+            <line x1={30} y1={195} x2={20} y2={193} strokeWidth={3} />
           </svg>
+          <span className="intro-speed-lines" />
         </div>
         <span className="intro-cut-line" />
         <span className="intro-cut-flash" />
+        <span className="intro-shockwave" />
+        <span className="intro-sparks" />
       </div>
     </div>
   );
