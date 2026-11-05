@@ -65,6 +65,7 @@ export function ScreenSlashIntro({ src, poster }: { src: string; poster?: string
         onCanPlay={() => { void video.current?.play().catch(() => { setPlaying(false); signalIntroComplete(); }); }}
         className="h-full w-full object-contain"
       />
+      <div className="intro-watermark-cover" />
     </div>
   );
 }
