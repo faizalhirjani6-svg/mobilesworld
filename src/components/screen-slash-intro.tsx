@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { signalIntroComplete } from "@/components/site";
 
 export function ScreenSlashIntro({ src, poster }: { src: string; poster?: string }) {
   const [playing, setPlaying] = useState(false);
@@ -7,9 +8,15 @@ export function ScreenSlashIntro({ src, poster }: { src: string; poster?: string
   const completed = useRef(false);
 
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      signalIntroComplete();
+      return;
+    }
     try {
-      if (sessionStorage.getItem("mw-screen-slash-played") === "1") return;
+      if (sessionStorage.getItem("mw-screen-slash-played") === "1") {
+        signalIntroComplete();
+        return;
+      }
     } catch { /* Playback still works without browser storage. */ }
     setPlaying(true);
   }, []);
@@ -28,11 +35,15 @@ export function ScreenSlashIntro({ src, poster }: { src: string; poster?: string
 
   useEffect(() => {
     if (!fading) return;
-    const timer = window.setTimeout(() => setPlaying(false), 450);
+    const timer = window.setTimeout(() => {
+      setPlaying(false);
+      signalIntroComplete();
+    }, 700);
     return () => window.clearTimeout(timer);
   }, [fading]);
 
   const finish = () => {
+    if (completed.current) return;
     completed.current = true;
     try { sessionStorage.setItem("mw-screen-slash-played", "1"); } catch { /* Optional storage. */ }
     setFading(true);
@@ -40,7 +51,7 @@ export function ScreenSlashIntro({ src, poster }: { src: string; poster?: string
 
   if (!playing) return null;
   return (
-    <div className={`screen-slash-intro${fading ? " is-fading" : ""}`} aria-hidden="true">
+    <div className={`screen-slash-intro is-in${fading ? " is-fading" : ""}`} aria-hidden="true">
       <video
         ref={video}
         src={src}
@@ -50,8 +61,8 @@ export function ScreenSlashIntro({ src, poster }: { src: string; poster?: string
         playsInline
         preload="auto"
         onEnded={finish}
-        onError={() => setPlaying(false)}
-        onCanPlay={() => { void video.current?.play().catch(() => setPlaying(false)); }}
+        onError={() => { setPlaying(false); signalIntroComplete(); }}
+        onCanPlay={() => { void video.current?.play().catch(() => { setPlaying(false); signalIntroComplete(); }); }}
         className="h-full w-full object-contain"
       />
     </div>

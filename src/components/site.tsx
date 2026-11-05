@@ -39,6 +39,28 @@ function reducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
+/* ---------- intro gate: holds reveals until the screen-slash intro finishes ---------- */
+const INTRO_EVENT = "mw-intro-complete";
+let introDone = false;
+
+export function signalIntroComplete() {
+  if (introDone) return;
+  introDone = true;
+  window.dispatchEvent(new CustomEvent(INTRO_EVENT));
+}
+
+function onIntroDone(cb: () => void) {
+  if (introDone || typeof window === "undefined") {
+    cb();
+    return;
+  }
+  const handler = () => {
+    window.removeEventListener(INTRO_EVENT, handler);
+    cb();
+  };
+  window.addEventListener(INTRO_EVENT, handler);
+}
+
 /* ---------- glide hook: enters and exits on every crossing ---------- */
 function useGlide(ref: RefObject<HTMLElement | null>, vertical: boolean, distance = 56) {
   useEffect(() => {
@@ -56,22 +78,28 @@ function useGlide(ref: RefObject<HTMLElement | null>, vertical: boolean, distanc
       if (el.style.getPropertyValue("--from-y") !== next) el.style.setProperty("--from-y", next);
     };
 
-    const io = new IntersectionObserver(
-      ([e]) => {
-        if (!e) return;
-        el.classList.toggle("in", e.isIntersecting);
-        // leaving: glide away in the direction of the scroll
-        if (!e.isIntersecting && vertical) {
-          const next = scrollDir === 1 ? `-${distance}px` : `${distance}px`;
-          el.style.setProperty("--from-y", next);
-        }
-      },
-      { threshold: 0.15, rootMargin: "-5% 0px -5% 0px" },
-    );
-    io.observe(el);
+    let io: IntersectionObserver | null = null;
+    const start = () => {
+      io = new IntersectionObserver(
+        ([e]) => {
+          if (!e) return;
+          el.classList.toggle("in", e.isIntersecting);
+          if (!e.isIntersecting && vertical) {
+            const next = scrollDir === 1 ? `-${distance}px` : `${distance}px`;
+            el.style.setProperty("--from-y", next);
+          }
+        },
+        { threshold: 0.15, rootMargin: "-5% 0px -5% 0px" },
+      );
+      io.observe(el);
+      park();
+    };
 
-    park();
-    return () => io.disconnect();
+    // Wait for the screen-slash intro to finish before activating reveals,
+    // so content doesn't animate behind the overlay and is missed.
+    onIntroDone(start);
+
+    return () => io?.disconnect();
   }, [ref, vertical, distance]);
 }
 
