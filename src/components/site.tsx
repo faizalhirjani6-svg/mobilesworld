@@ -562,7 +562,7 @@ export function Intro() {
         <div className="intro-phone-glow" />
         <div className="intro-phone-crack" />
       </div>
-      <div className="intro-slash-fx is-${phase}">
+      <div className={`intro-slash-fx is-${phase}`}>
         <span className="intro-slash-line" />
         <span className="intro-slash-flash" />
         <span className="intro-slash-shockwave" />
