@@ -1,5 +1,9 @@
 # Security and Netlify readiness
 
+## Current requests
+- [x] Make shop squares slightly bigger while keeping two per mobile row.
+- [ ] Replace the current animation using only the supplied samurai video, lasting at least five seconds, with a screen slash and Mobile World logo reveal.
+
 ## Cross-device polish
 - [x] Improve narrow-screen text, header, contact rows, and stable opening height without changing content.
 - [x] Reduce unnecessary scroll work and pause decorative motion when offscreen.
