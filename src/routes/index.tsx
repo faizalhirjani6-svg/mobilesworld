@@ -1,8 +1,4 @@
-import phoneFront from "@/assets/phone-front.png";
-import phoneBack from "@/assets/phone-back.png";
-import type { CSSProperties } from "react";
 import type { ReactNode } from "react";
-import { useEffect, useRef } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Header, Footer, Reveal, Photo, ScrollProgress, GlideLink } from "@/components/site";
 import { ShopPhotoStrip } from "@/components/shop-photo-strip";
@@ -94,19 +90,7 @@ const steps = [
 const brands = ["Apple", "Samsung", "OnePlus", "Xiaomi", "Vivo", "Oppo", "Realme", "Google Pixel", "Motorola", "Nothing"];
 
 function Index() {
-  const phoneStage = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const stage = phoneStage.current;
-    if (!stage) return;
-    let visible = true;
-    const update = () => stage.toggleAttribute("data-motion-paused", !visible || document.hidden);
-    const observer = new IntersectionObserver(([entry]) => {
-      visible = entry?.isIntersecting ?? false;
-      update();
-    });
-    observer.observe(stage);
-    document.addEventListener("visibilitychange", update);
-    return () => {
+  return () => {
       observer.disconnect();
       document.removeEventListener("visibilitychange", update);
     };
@@ -117,32 +101,8 @@ function Index() {
       <Header />
 
 
-      {/* Opening text over the decorative phone animation */}
+      {/* Opening content follows the screen-slash intro */}
       <section className="opening-section relative isolate overflow-hidden">
-      <div ref={phoneStage} aria-hidden="true" className="stage3d hero-phone-background">
-        <div className="stage3d-grid" />
-        <div className="p3-shadow" />
-        <div className="stage3d-track"><div className="p3-lift">
-          <div className="phone3d">
-            <div className="p3-slice" style={{ "--z": "-4px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "-3px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "-2px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "-1px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "0px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "1px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "2px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "3px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "4px" } as CSSProperties} />
-            <div className="p3-board"><span className="p3-chip" /><span className="p3-batt" /><span className="p3-camera" /><span className="p3-connector" /></div>
-            <div className="p3-front">
-              <img src={phoneFront} alt="" width={576} height={1168} />
-              <div className="p3-wall">
-                <div className="p3-mark" aria-hidden="true">
-                  <div className="p3-emblem"><span>MW</span><i /></div>
-                  <div className="p3-wordmark"><span>MOBILE</span><span>WORLD</span></div>
-                  <div className="p3-mark-line" />
-                </div>
-              </div>
-              <span className="p3-glare" />
-            </div>
-            <div className="p3-back"><img src={phoneBack} alt="" width={576} height={1168} /></div>
-          </div>
-          <div className="p3-halo"><span /><span /></div>
-        </div></div>
-        <div className="stage3d-orbit"><span /><span /><span /></div>
-      </div>
         <div className="opening-content relative z-10 mx-auto flex max-w-6xl flex-col justify-end px-5 pb-12 pt-12 sm:pb-16">
           <Reveal>
             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-primary">Repairs and audio</p>
