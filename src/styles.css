@@ -1,3 +1,4 @@
+successfully downloaded text file (SHA: 505ccac12a171a210476b094f92d11348c0ef0d0)
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
@@ -178,6 +179,8 @@
 .intro-splash.is-samurai .intro-phone-screen { opacity: 1; transform: translate(-50%, -50%) scale(1); transition: opacity 0.4s ease 0.15s, transform 0.5s cubic-bezier(.2, .7, .2, 1) 0.15s; }
 .intro-phone-glow { position: absolute; inset: 0; background: radial-gradient(60% 40% at 50% 40%, color-mix(in oklab, var(--color-primary) 20%, transparent), transparent 70%); animation: floor-run 4s linear infinite; }
 .intro-splash.is-slash .intro-phone-screen { transform: translate(-50%, -50%) scale(1) rotateY(8deg); transition: transform 0.4s cubic-bezier(.3, 0, .2, 1); }
+.intro-splash.is-slash .intro-phone-glow { animation: phone-shatter 400ms ease-out 200ms both; }
+@keyframes phone-shatter { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 0; } }
 .intro-splash.is-emerge .intro-phone-screen { opacity: 0.3; transform: translate(-50%, -50%) scale(1.1) rotateY(20deg); transition: opacity 0.6s ease, transform 0.6s ease; }
 .intro-splash.is-glide .intro-phone-screen, .intro-splash.is-out .intro-phone-screen { opacity: 0; transition: opacity 0.3s ease; }
 
@@ -202,6 +205,25 @@
 .intro-splash.is-slash .intro-slash-shockwave { animation: slash-shockwave 600ms ease-out 100ms both; }
 @keyframes slash-shockwave { 0% { width: 20px; height: 20px; opacity: 0; border-width: 3px; } 15% { opacity: 0.85; } 50% { width: 220px; height: 220px; opacity: 0.5; border-width: 2px; } 100% { width: 500px; height: 500px; opacity: 0; border-width: 1px; } }
 .intro-splash.is-emerge .intro-slash-fx, .intro-splash.is-glide .intro-slash-fx, .intro-splash.is-out .intro-slash-fx { opacity: 0; transition: opacity 0.2s ease; }
+
+/* katana swing animation — sword starts raised, then swings down across the screen */
+.intro-katana { transform-origin: 168px 250px; transition: transform 0.3s ease; }
+.intro-splash.is-samurai .intro-katana { transform: rotate(-70deg); transition: transform 0.5s cubic-bezier(.3, 0, .2, 1) 0.2s; }
+.intro-splash.is-slash .intro-katana { transform: rotate(55deg); transition: transform 0.35s cubic-bezier(.1, .8, .3, 1); }
+.intro-splash.is-emerge .intro-katana, .intro-splash.is-glide .intro-katana, .intro-splash.is-out .intro-katana { transform: rotate(55deg); opacity: 0; transition: opacity 0.4s ease; }
+
+/* phone crack — a glowing split that appears when the sword hits */
+.intro-phone-crack { position: absolute; top: 0; left: 50%; width: 2px; height: 100%; transform: translateX(-50%); opacity: 0; background: linear-gradient(to bottom, transparent, var(--color-primary) 15%, #fff 50%, var(--color-primary) 85%, transparent); box-shadow: 0 0 20px var(--color-primary), 0 0 40px color-mix(in oklab, var(--color-primary) 40%, transparent); }
+.intro-splash.is-slash .intro-phone-crack { opacity: 1; animation: crack-open 500ms ease-out both; }
+.intro-splash.is-emerge .intro-phone-crack { opacity: 0.6; width: 12px; transition: opacity 0.5s ease, width 0.5s ease; }
+.intro-splash.is-glide .intro-phone-crack, .intro-splash.is-out .intro-phone-crack { opacity: 0; transition: opacity 0.3s ease; }
+@keyframes crack-open { 0% { width: 0; opacity: 0; } 20% { width: 2px; opacity: 1; } 50% { width: 6px; opacity: 1; } 100% { width: 12px; opacity: 0.8; } }
+
+/* burst — radial light that explodes outward from the slash point when logo emerges */
+.intro-burst { position: absolute; top: 50%; left: 50%; width: 0; height: 0; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, color-mix(in oklab, var(--color-primary) 50%, transparent) 30%, transparent 70%); transform: translate(-50%, -50%); opacity: 0; z-index: 3; pointer-events: none; }
+.intro-splash.is-emerge .intro-burst { animation: burst-out 700ms ease-out both; }
+.intro-splash.is-glide .intro-burst, .intro-splash.is-out .intro-burst { opacity: 0; transition: opacity 0.3s ease; }
+@keyframes burst-out { 0% { width: 0; height: 0; opacity: 0; } 15% { width: 60px; height: 60px; opacity: 0.9; } 40% { width: 200px; height: 200px; opacity: 0.6; } 100% { width: 400px; height: 400px; opacity: 0; } }
 
 .intro-mark { position: relative; text-align: center; transform-style: preserve-3d; transform-origin: var(--origin-x, 50%) var(--origin-y, 50%); opacity: 0; z-index: 4; }
 .intro-splash.is-samurai .intro-mark, .intro-splash.is-slash .intro-mark { opacity: 0; }
