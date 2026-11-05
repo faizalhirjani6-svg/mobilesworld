@@ -90,11 +90,6 @@ const steps = [
 const brands = ["Apple", "Samsung", "OnePlus", "Xiaomi", "Vivo", "Oppo", "Realme", "Google Pixel", "Motorola", "Nothing"];
 
 function Index() {
-  return () => {
-      observer.disconnect();
-      document.removeEventListener("visibilitychange", update);
-    };
-  }, []);
   return (
     <div className="min-h-screen overflow-x-clip">
       <ScrollProgress />
