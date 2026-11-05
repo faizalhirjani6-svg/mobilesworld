@@ -1,1 +1,748 @@
-PLACEHOLDER
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-display: "Unbounded", sans-serif;
+  --font-sans: "Manrope", sans-serif;
+  --font-serif: "Instrument Serif", serif;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-popover: var(--card);
+  --color-popover-foreground: var(--foreground);
+  --color-destructive: var(--destructive);
+}
+
+:root {
+  --radius: 0px;
+  /* midnight black */
+  --background: oklch(0.12 0.015 265);
+  --foreground: oklch(0.93 0.01 250);
+  --card: oklch(0.19 0.014 260);
+  --card-foreground: oklch(0.93 0.01 250);
+  /* acid lime (slightly toned, not neon) */
+  --primary: oklch(0.91 0.2 118);
+  --primary-foreground: oklch(0.15 0.012 260);
+  /* cobalt blue */
+  --accent: oklch(0.6 0.16 268);
+  --accent-foreground: oklch(0.12 0.015 265);
+  --secondary: oklch(0.22 0.02 260);
+  --secondary-foreground: oklch(0.93 0.01 250);
+  --muted: oklch(0.22 0.015 260);
+  --muted-foreground: oklch(0.68 0.02 255);
+  --border: oklch(0.3 0.02 260);
+  --input: oklch(0.3 0.02 260);
+  --ring: oklch(0.6 0.16 268);
+  --destructive: oklch(0.6 0.2 27);
+  /* extruded sides for the intro wordmark */
+  --ext-a: color-mix(in oklab, var(--primary) 32%, var(--background));
+  --ext-b: color-mix(in oklab, var(--primary) 11%, var(--background));
+  --phone-glass: oklch(0.04 0.005 265);
+  --phone-metal: oklch(0.62 0.03 245);
+  --phone-circuit: oklch(0.3 0.09 160);
+  --phone-shadow: oklch(0 0 0 / .7);
+  --phone-logo-shadow: 0 0 18px color-mix(in oklab, var(--primary) 40%, transparent);
+}
+
+@layer base {
+  * { border-color: var(--color-border); }
+  html { scroll-behavior: smooth; scroll-padding-top: 5rem; }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+  }
+  h1, h2, h3 { font-family: var(--font-display); overflow-wrap: break-word; }
+  a { touch-action: manipulation; }
+  a:focus-visible { outline: 2px solid var(--color-ring); outline-offset: 4px; }
+}
+
+.opening-section, .opening-content { min-height: 88vh; min-height: 88svh; }
+
+.screen-slash-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: var(--color-background);
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(1.04);
+  filter: blur(0);
+  transition:
+    opacity 500ms cubic-bezier(.22, .61, .36, 1),
+    transform 700ms cubic-bezier(.22, .61, .36, 1),
+    filter 500ms ease;
+}
+.screen-slash-intro.is-in {
+  opacity: 1;
+  transform: scale(1);
+}
+.screen-slash-intro.is-fading {
+  opacity: 0;
+  transform: scale(1.06);
+  filter: blur(8px);
+  transition:
+    opacity 700ms cubic-bezier(.4, 0, .2, 1),
+    transform 700ms cubic-bezier(.4, 0, .2, 1),
+    filter 600ms cubic-bezier(.4, 0, .2, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .screen-slash-intro { display: none; }
+}
+
+/* Scroll glide: items slide in from the direction they were left, out the way they are scrolled */
+.reveal {
+  opacity: 0;
+  transform: translate(var(--from-x, 0px), var(--from-y, 0px));
+  transition:
+    opacity 0.9s cubic-bezier(.16, .84, .3, 1),
+    transform 0.9s cubic-bezier(.16, .84, .3, 1);
+  transition-delay: var(--delay, 0ms);
+  will-change: opacity, transform;
+}
+.reveal-left { --from-x: -80px; }
+.reveal-right { --from-x: 80px; }
+.reveal-up { --from-y: 60px; }
+.reveal-y { --from-y: 56px; }
+.reveal.in { opacity: 1; transform: none; }
+
+/* Shop: quick pop whenever a cart quantity or total count changes */
+@keyframes count-pop {
+  from { opacity: 0.3; transform: scale(0.6); }
+  to { opacity: 1; transform: none; }
+}
+.count-pop { display: inline-block; animation: count-pop 0.3s cubic-bezier(.2, .7, .2, 1); }
+@media (prefers-reduced-motion: reduce) {
+  .count-pop { animation: none; }
+}
+
+/* Shop: add-to-cart celebration — glowing dot flies into the cart, the card flashes, the cart pops */
+.fly-dot {
+  position: fixed;
+  z-index: 60;
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  background: var(--color-primary);
+  box-shadow: 0 0 14px color-mix(in oklab, var(--color-primary) 65%, transparent);
+  pointer-events: none;
+}
+@keyframes card-added {
+  0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--color-primary) 55%, transparent); }
+  100% { box-shadow: 0 0 0 18px transparent; }
+}
+.card-added { animation: card-added 0.75s ease-out; border-color: var(--color-primary); }
+@keyframes cart-pop {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.14); }
+  100% { transform: scale(1); }
+}
+.cart-pop { animation: cart-pop 0.45s cubic-bezier(.2, .7, .2, 1); }
+@media (prefers-reduced-motion: reduce) {
+  .fly-dot { display: none; }
+  .card-added, .cart-pop { animation: none; }
+}
+
+/* Header tucks itself away going down, and pops straight back coming up */
+.site-header { transition: transform 0.45s cubic-bezier(.2, .7, .2, 1); }
+.site-header.is-hidden { transform: translateY(-100%); }
+
+/* Header nav: the page you're on stays lit up, the rest waits quietly */
+.nav-link {
+  display: inline-block;
+  min-height: 36px;
+  align-content: center;
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.3rem 0.65rem;
+  color: var(--color-muted-foreground);
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+  transition:
+    color 0.3s ease,
+    background-color 0.3s ease,
+    transform 0.3s cubic-bezier(.2, .7, .2, 1);
+}
+.nav-link:hover { color: var(--color-foreground); transform: translateY(-1px); }
+@media (max-width: 639px) {
+  .nav-link { padding: 0.28rem 0.5rem; }
+}
+@media (max-width: 359px) {
+  .nav-link { padding-inline: 0.3rem; }
+}
+@keyframes nav-pop {
+  from { opacity: 0; transform: translateY(7px); }
+  to { opacity: 1; transform: none; }
+}
+.nav-link.is-active {
+  color: var(--color-primary-foreground);
+  background: var(--color-primary);
+  animation: nav-pop 0.45s cubic-bezier(.2, .7, .2, 1) both;
+}
+
+/* Footer legal links: same page you're on gets the lime underline */
+.nav-foot {
+  color: var(--color-muted-foreground);
+  text-decoration-line: underline;
+  text-underline-offset: 4px;
+  transition: color 0.3s ease;
+}
+.nav-foot:hover { color: var(--color-foreground); }
+.nav-foot.is-active {
+  color: var(--color-primary);
+  text-decoration-color: var(--color-primary);
+}
+
+/* Header call-to-action: a lime chip, top corner cut on the diagonal */
+.cta-chip {
+  display: inline-block;
+  padding: 0.55rem 0.95rem;
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+  transition: filter 0.25s ease;
+}
+
+@keyframes ticker { to { transform: translateX(-50%); } }
+.ticker { animation: ticker 28s linear infinite; }
+
+@keyframes shimmer { 0%{opacity:.5} 50%{opacity:1} 100%{opacity:.5} }
+.skeleton { background: var(--color-muted); animation: shimmer 1.4s ease-in-out infinite; }
+
+.stage3d.hero-phone-background {
+  position: absolute; inset: 0; height: 100%; min-height: 0; z-index: -1;
+  pointer-events: none; opacity: .6;
+}
+.hero-phone-background .stage3d-track { left: 72%; top: 42%; }
+.hero-phone-background .stage3d-grid { opacity: .35; }
+.hero-phone-background .stage3d-orbit { display: none; }
+.hero-phone-background .p3-shadow { left: 72%; top: 42%; }
+.hero-phone-background::before {
+  content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none;
+  background: linear-gradient(to bottom, transparent 15%, color-mix(in oklab, var(--color-background) 30%, transparent) 45%, color-mix(in oklab, var(--color-background) 85%, transparent) 100%);
+}
+@media (max-width: 640px) {
+  .hero-phone-background .stage3d-track { left: 58%; top: 28%; }
+  .hero-phone-background .p3-shadow { left: 58%; top: 28%; }
+  .hero-phone-background { opacity: .5; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .ticker { animation: none; }
+  .cta-chip { transition: none; }
+  .nav-link { transition: none; }
+  .nav-link.is-active { animation: none; }
+  .site-header { transition: none; }
+  .site-header.is-hidden { transform: none; }
+}
+
+.stage3d[data-motion-paused] *,
+.stage3d[data-motion-paused] *::before,
+.stage3d[data-motion-paused] *::after { animation-play-state: paused !important; }
+
+
+.text-outline { color: transparent; -webkit-text-stroke: 1.5px var(--color-foreground); }
+.snap-strip { scroll-snap-type: x mandatory; scroll-padding-inline: 1.25rem; scrollbar-width: none; }
+.snap-strip::-webkit-scrollbar { display: none; }
+.snap-strip > * { scroll-snap-align: start; }
+
+/* Intro: the wordmark builds in 3D, then turns and flies up into the top-left corner */
+.intro-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-background);
+  perspective: 900px;
+  perspective-origin: 50% 44%;
+  pointer-events: none;
+  transition: opacity 0.85s ease 0.32s;
+}
+.intro-splash::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(46% 40% at 50% 44%, color-mix(in oklab, var(--color-primary) 16%, transparent), transparent 74%);
+  opacity: 0;
+  transition: opacity 0.7s ease;
+}
+.intro-splash.is-in::before { opacity: 1; }
+.intro-splash.is-glide,
+.intro-splash.is-out { opacity: 0; }
+
+/* receding grid floor — the depth cue */
+.intro-floor {
+  position: absolute;
+  left: -60%;
+  right: -60%;
+  bottom: -6%;
+  height: 52%;
+  background-image:
+    repeating-linear-gradient(to right, color-mix(in oklab, var(--color-primary) 26%, transparent) 0 1px, transparent 1px 88px),
+    repeating-linear-gradient(to bottom, color-mix(in oklab, var(--color-primary) 26%, transparent) 0 1px, transparent 1px 88px);
+  background-position: 0 0, 0 0;
+  transform: perspective(420px) rotateX(74deg);
+  transform-origin: 50% 100%;
+  -webkit-mask-image: linear-gradient(to top, #000 4%, transparent 82%);
+  mask-image: linear-gradient(to top, #000 4%, transparent 82%);
+  opacity: 0;
+  animation: floor-run 5s linear infinite;
+  transition: opacity 0.9s ease 0.1s;
+}
+.intro-splash.is-in .intro-floor { opacity: 0.45; }
+.intro-splash.is-glide .intro-floor,
+.intro-splash.is-out .intro-floor { opacity: 0; transition: opacity 0.5s ease; }
+@keyframes floor-run { to { background-position: 0 0, 0 880px; } }
+
+.intro-mark {
+  position: relative;
+  text-align: center;
+  transform-style: preserve-3d;
+  transform-origin: var(--origin-x, 50%) var(--origin-y, 50%);
+}
+
+.intro-word {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(1.9rem, 9.5vw, 5.4rem);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--color-foreground);
+  transform-style: preserve-3d;
+}
+.intro-word-b {
+  display: inline-block;
+  color: var(--color-primary);
+  transform-style: preserve-3d;
+}
+
+.intro-letter {
+  display: inline-block;
+  transform-origin: 50% 100%;
+  opacity: 0;
+  text-shadow:
+    0.018em 0.018em 0 var(--ext-a),
+    0.036em 0.036em 0 var(--ext-a),
+    0.054em 0.054em 0 var(--ext-a),
+    0.072em 0.072em 0 var(--ext-a),
+    0.09em 0.09em 0 var(--ext-b),
+    0.108em 0.108em 0 var(--ext-b),
+    0.126em 0.126em 0 var(--ext-b),
+    0.16em 0.22em 0.55em rgba(0, 0, 0, 0.5);
+  animation: letter-in 0.6s cubic-bezier(.16, 1.1, .3, 1) both;
+  animation-delay: calc(120ms + var(--i, 0) * 32ms);
+}
+@keyframes letter-in {
+  0% { opacity: 0; transform: rotateX(-96deg) translateZ(-70px); }
+  55% { opacity: 1; }
+  100% { opacity: 1; transform: rotateX(0deg) translateZ(0); }
+}
+
+/* the mark does a full 3D turn on the way out, resolving square so it lands clean */
+@keyframes intro-fly {
+  0% { transform: perspective(900px) rotateY(0deg) rotateX(0deg) translateZ(0); }
+  42% { transform: perspective(900px) rotateY(-34deg) rotateX(12deg) translateZ(-190px); }
+  100% { transform: perspective(900px) rotateY(0deg) rotateX(0deg) translateZ(0); }
+}
+.intro-splash.is-glide .intro-word,
+.intro-splash.is-out .intro-word {
+  animation: intro-fly 850ms cubic-bezier(.5, 0, .25, 1) both;
+}
+.intro-splash.is-glide .intro-mark,
+.intro-splash.is-out .intro-mark {
+  transform: translate(var(--glide-x, 0px), var(--glide-y, 0px)) scale(var(--glide-s, 1));
+  transition: transform 850ms cubic-bezier(.5, 0, .25, 1);
+}
+
+.intro-tag {
+  margin-top: 1rem;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--color-muted-foreground);
+  opacity: 0;
+  transform: translateY(12px) rotateX(-45deg);
+  transform-origin: 50% 0%;
+  transition:
+    opacity 0.5s ease 0.5s,
+    transform 0.6s cubic-bezier(.16, 1.1, .3, 1) 0.5s;
+}
+.intro-splash.is-in .intro-tag { opacity: 1; transform: none; }
+.intro-splash.is-glide .intro-tag,
+.intro-splash.is-out .intro-tag {
+  opacity: 0;
+  transform: translateY(-14px) rotateX(55deg);
+  transition:
+    opacity 0.35s ease,
+    transform 0.4s ease;
+}
+
+/* The real header logo waits behind the splash, then fades in as the intro lands */
+html.intro-live .header-logo { opacity: 0; }
+html.intro-reveal .header-logo { opacity: 1; transition: opacity 0.6s ease 0.34s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .intro-splash { display: none; }
+  html.intro-live .header-logo { opacity: 1; }
+}
+
+/* Always-on 3D stage (intentionally ignores reduced-motion per owner request) */
+.stage3d {
+  position: relative; height: 72vh; min-height: 560px; overflow: hidden;
+  perspective: 1100px; perspective-origin: 50% 35%;
+  background: radial-gradient(60% 50% at 50% 45%, color-mix(in oklab, var(--color-accent) 20%, transparent), transparent 75%);
+}
+.stage3d-grid {
+  position: absolute; left: -50%; right: -50%; bottom: -10%; height: 55%;
+  background-image:
+    repeating-linear-gradient(to right, color-mix(in oklab, var(--color-primary) 20%, transparent) 0 1px, transparent 1px 70px),
+    repeating-linear-gradient(to bottom, color-mix(in oklab, var(--color-primary) 20%, transparent) 0 1px, transparent 1px 70px);
+  transform: rotateX(72deg); transform-origin: 50% 100%;
+  -webkit-mask-image: linear-gradient(to top, transparent, #000 28%, transparent 85%); mask-image: linear-gradient(to top, transparent, #000 28%, transparent 85%);
+  animation: floor-run 4s linear infinite !important;
+}
+/* path: a smooth figure-eight across the stage */
+.stage3d-track {
+  position: absolute; left: 50%; top: 50%; width: 0; height: 0;
+  transform-style: preserve-3d;
+  animation: stage-x 16s ease-in-out infinite !important;
+}
+.stage3d-track > .p3-lift { transform-style: preserve-3d; animation: stage-y 8s ease-in-out infinite !important; }
+@keyframes stage-x {
+  0%,100% { transform: translate3d(-30vw, 0, -60px); }
+  50% { transform: translate3d(30vw, 0, -60px); }
+}
+@keyframes stage-y {
+  0%,100% { transform: translate3d(0, -7vh, 90px); }
+  50% { transform: translate3d(0, 7vh, -140px); }
+}
+.p3-shadow {
+  position: absolute; left: 50%; top: 46%; width: 150px; height: 28px; margin: 170px 0 0 -75px;
+  border-radius: 50%; background: radial-gradient(closest-side, rgba(0,0,0,.65), transparent);
+  filter: blur(4px);
+  animation: shadow-x 16s ease-in-out infinite !important;
+}
+@keyframes shadow-x { 0%,100% { transform: translateX(-30vw) scale(.8); } 50% { transform: translateX(30vw) scale(.8); } }
+
+.phone3d {
+  --w: 154px; --h: 312px; --d: 10px; --r: 26px;
+  position: absolute; width: var(--w); height: var(--h);
+  margin: calc(var(--h) / -2) 0 0 calc(var(--w) / -2);
+  transform-style: preserve-3d;
+  animation: phone-spin 12s cubic-bezier(.45,.05,.55,.95) infinite !important;
+}
+@keyframes phone-spin {
+  0%   { transform: rotateX(-10deg) rotateY(-28deg) rotateZ(6deg); }
+  20%  { transform: rotateX(8deg)  rotateY(20deg)  rotateZ(-4deg); }
+  45%  { transform: rotateX(-6deg) rotateY(200deg) rotateZ(5deg); }
+  70%  { transform: rotateX(12deg) rotateY(160deg) rotateZ(-6deg); }
+  100% { transform: rotateX(-10deg) rotateY(332deg) rotateZ(6deg); }
+}
+/* stacked slices make a solid rounded body */
+.p3-slice {
+  position: absolute; inset: 0; border-radius: var(--r);
+  background: linear-gradient(90deg, oklch(0.35 0.04 250), oklch(0.62 0.03 245) 50%, oklch(0.33 0.04 250)); inset: 2px;
+  transform: translateZ(var(--z));
+}
+.p3-front, .p3-back { position: absolute; inset: 0; border-radius: var(--r); backface-visibility: hidden; overflow: hidden; isolation: isolate; }
+.p3-front {
+  transform: translateZ(calc(var(--d) / 2 + 2px));
+  background: oklch(0.1 0.01 260);
+  padding: 5px;
+}
+.p3-screen {
+  position: relative; width: 100%; height: 100%; border-radius: calc(var(--r) - 5px); overflow: hidden;
+  background:
+    radial-gradient(80% 50% at 20% 15%, color-mix(in oklab, var(--color-primary) 70%, transparent), transparent 70%),
+    radial-gradient(90% 60% at 90% 90%, var(--color-accent), transparent 70%),
+    oklch(0.16 0.03 265);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+}
+.p3-island { position: absolute; top: 8px; left: 50%; width: 38px; height: 11px; margin-left: -19px; border-radius: 99px; background: oklch(0.05 0 0); }
+.p3-time { font-family: var(--font-display); font-weight: 700; font-size: 1.7rem; color: var(--color-foreground); letter-spacing: -0.03em; }
+.p3-logo { font-size: .55rem; font-weight: 700; letter-spacing: .3em; color: var(--color-foreground); opacity: .8; }
+.p3-glare, .p3-back::after {
+  content: ""; position: absolute; inset: -40%;
+  background: linear-gradient(115deg, transparent 42%, rgba(255,255,255,.28) 50%, transparent 58%);
+  animation: glare 6s ease-in-out infinite !important;
+}
+@keyframes glare { 0%,100% { transform: translateX(-35%); } 50% { transform: translateX(35%); } }
+.p3-back {
+  transform: rotateY(180deg) translateZ(calc(var(--d) / 2 + 2px));
+  background: linear-gradient(160deg, oklch(0.42 0.04 260), oklch(0.24 0.03 262));
+}
+.p3-bump {
+  position: absolute; top: 9px; left: 9px; width: 52px; height: 52px; border-radius: 14px;
+  background: oklch(0.3 0.03 262); box-shadow: inset 0 0 0 1px rgba(255,255,255,.15), 0 2px 6px rgba(0,0,0,.5);
+}
+.p3-lens { position: absolute; width: 20px; height: 20px; border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, oklch(0.5 0.1 265) 0 2px, oklch(0.08 0 0) 4px 6px, oklch(0.4 0 0) 7px 8px, oklch(0.15 0 0) 9px);
+}
+.p3-lens:nth-child(1) { top: 4px; left: 4px; } .p3-lens:nth-child(2) { bottom: 4px; left: 4px; }
+.p3-flash { position: absolute; top: 8px; right: 7px; width: 8px; height: 8px; border-radius: 50%; background: oklch(0.9 0.05 90); }
+.p3-brand { position: absolute; bottom: 40%; width: 100%; text-align: center; font-family: var(--font-display); font-weight: 900; font-size: 1.1rem; color: var(--color-primary); opacity: .85; }
+.p3-btn { position: absolute; width: 3px; border-radius: 2px; background: oklch(0.5 0.01 260); transform: translateZ(0); }
+.p3-btn.b1 { right: -2px; top: 70px; height: 34px; }
+.p3-btn.b2 { left: -2px; top: 60px; height: 22px; } .p3-btn.b3 { left: -2px; top: 90px; height: 22px; }
+
+.stage3d-orbit { position: absolute; inset: 0; transform-style: preserve-3d; pointer-events: none; }
+.stage3d-orbit span {
+  position: absolute; left: 50%; top: 46%; width: 10px; height: 10px; border-radius: 50%;
+  background: var(--color-primary); box-shadow: 0 0 16px var(--color-primary);
+  animation: orbit-a 9s linear infinite !important;
+}
+.stage3d-orbit span:nth-child(2) { background: var(--color-accent); box-shadow: 0 0 16px var(--color-accent); animation-duration: 13s !important; animation-direction: reverse !important; }
+.stage3d-orbit span:nth-child(3) { width: 6px; height: 6px; animation-duration: 6s !important; animation-delay: -3s !important; }
+@keyframes orbit-a {
+  from { transform: rotateY(0deg) translateX(min(40vw, 440px)) translateY(-40px); }
+  to   { transform: rotateY(360deg) translateX(min(40vw, 440px)) translateY(-40px); }
+}
+
+.p3-front img, .p3-back img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: fill; }
+.p3-front, .p3-back { background: transparent !important; padding: 0 !important; }
+.p3-glare { inset: -40%; mix-blend-mode: screen; }
+.p3-front img, .p3-back img { transform: scale(1.05); }
+
+/* Seamless infinite loop: the phone never leaves the stage — every keyframe ends where it starts */
+.stage3d { --orbit-radius: min(12vw, 120px); --orbit-setback: 45px; }
+@property --orbit-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+.stage3d-track {
+  transform: translate3d(calc(var(--orbit-radius) * sin(var(--orbit-angle))), 0px, calc(var(--orbit-radius) * (cos(var(--orbit-angle)) - 1) - var(--orbit-setback)));
+  animation: seq-path 8s linear infinite !important;
+}
+.stage3d-track > .p3-lift { animation: none !important; }
+.p3-shadow { animation: seq-shadow 8s ease-in-out infinite !important; }
+@property --spin-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+@property --tumble-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 3deg;
+}
+.phone3d {
+  transform: rotateX(calc(-8deg + 12deg * sin(var(--spin-angle) * 2))) rotateY(calc(-10deg + 16deg * sin(var(--spin-angle)))) rotateZ(var(--tumble-angle));
+  animation: seq-turn 8s linear infinite, seq-tumble 8s cubic-bezier(.4, 0, .6, 1) infinite !important;
+}
+.p3-front { animation: seq-front 8s ease-in-out infinite !important; }
+.p3-back { animation: seq-back 8s ease-in-out infinite !important; backface-visibility: visible; }
+.p3-slice { animation: seq-body 8s ease-in-out infinite !important; }
+@keyframes seq-bob { 0%,100% { transform: translateY(-6px); } 50% { transform: translateY(6px); } }
+/* A continuous angle describes a true circle without easing or stationary holds. */
+@keyframes seq-path {
+  from { --orbit-angle: 0deg; }
+  to { --orbit-angle: 360deg; }
+}
+@keyframes seq-shadow {
+  0%,100% { transform: scale(.85); opacity: .85; }
+  25% { transform: translateX(var(--orbit-radius)) scale(.75); opacity: .65; }
+  50% { transform: scale(.65); opacity: .5; }
+  75% { transform: translateX(calc(var(--orbit-radius) * -1)) scale(.75); opacity: .65; }
+}
+/* turns non-stop; faces front while it opens up, and the loop closes on itself */
+@keyframes seq-turn {
+  from { --spin-angle: 0deg; }
+  to { --spin-angle: 360deg; }
+}
+@keyframes seq-tumble {
+  0% { --tumble-angle: 3deg; }
+  12.5% { --tumble-angle: 8deg; }
+  30% { --tumble-angle: 95deg; }
+  52% { --tumble-angle: 195deg; }
+  70% { --tumble-angle: 265deg; }
+  85% { --tumble-angle: 315deg; }
+  100% { --tumble-angle: 363deg; }
+}
+/* exploded view: the screen lifts off and floats above the chassis, the back panel
+   drops away below it, the frame layers spread and the board lights up in the middle */
+@keyframes seq-front {
+  0%,12.5%,100% { transform: translateZ(5px); }
+  5%,7.5% { transform: translate3d(-36px, -74px, 100px) rotateX(-8deg); }
+}
+@keyframes seq-back {
+  0%,12.5%,100% { transform: translateZ(-5px) rotateY(180deg); }
+  5%,7.5% { transform: translate3d(68px, 80px, -100px) rotateY(145deg) rotateZ(6deg); }
+}
+@keyframes seq-body {
+  0%,12.5%,100% { opacity: 1; transform: translateZ(var(--z)); }
+  5%,7.5% { opacity: .12; transform: translateZ(calc(var(--z) * 5)); }
+}
+
+
+
+
+/* ---------- Fullscreen logo wallpaper, internal board, neon halo ---------- */
+.stage3d { perspective: 800px !important; }
+.p3-wall {
+  /* matches the display area of the 1.05-scaled phone frame so no bezel gaps show */
+  position: absolute; inset: 1.2% 4.2%; border-radius: 20px; overflow: hidden;
+  background: oklch(0.06 0.01 265);
+  box-shadow: inset 0 0 0 1px oklch(0.03 0 0);
+}
+/* smaller logo centred on midnight black; lighten blend hides the image's own dark backdrop */
+.p3-wall img {
+  position: absolute; top: 50%; left: 50%; width: 62%; height: 62%; object-fit: contain;
+  transform: translate(-50%, -50%); mix-blend-mode: lighten;
+  animation: wall-glow 3.2s ease-in-out infinite !important;
+}
+@keyframes wall-glow { 0%,100% { filter: brightness(1); } 50% { filter: brightness(1.18); } }
+
+/* internal board revealed during the exploded view */
+.p3-board {
+  position: absolute; inset: 5% 9%; border-radius: 12px; transform: translateZ(0);
+  background:
+    repeating-linear-gradient(90deg, color-mix(in oklab, var(--color-primary) 60%, transparent) 0 1px, transparent 1px 11px),
+    repeating-linear-gradient(0deg, color-mix(in oklab, var(--color-accent) 50%, transparent) 0 1px, transparent 1px 14px),
+    oklch(0.3 0.09 160);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--color-primary) 55%, transparent),
+    0 0 34px color-mix(in oklab, var(--color-primary) 75%, transparent);
+  opacity: 0; animation: seq-board 8s ease-in-out infinite !important;
+}
+
+.p3-chip { position: absolute; top: 20%; left: 28%; width: 44%; height: 20%; border-radius: 4px; background: oklch(0.16 0.01 260); box-shadow: 0 0 12px var(--color-primary), inset 0 0 0 1px color-mix(in oklab, var(--color-primary) 70%, transparent); }
+.p3-batt { position: absolute; bottom: 12%; left: 16%; width: 68%; height: 38%; border-radius: 6px; background: linear-gradient(180deg, oklch(0.5 0.05 150), oklch(0.3 0.04 160)); box-shadow: inset 0 0 0 1px oklch(0.75 0.15 150), 0 0 14px color-mix(in oklab, var(--color-primary) 45%, transparent); }
+
+@keyframes seq-board {
+  0%,12.5%,100% { opacity: 0; transform: translateZ(0) scale(.9); }
+  5%,7.5% { opacity: 1; transform: translateZ(22px) scale(1); }
+}
+
+
+
+/* neon rings orbiting the phone in 3D */
+.p3-halo { position: absolute; left: 0; top: 0; transform-style: preserve-3d; }
+.p3-halo span {
+  position: absolute; width: 300px; height: 300px; margin: -150px 0 0 -150px; border-radius: 50%;
+  border: 1px solid color-mix(in oklab, var(--color-primary) 75%, transparent);
+  box-shadow: 0 0 12px color-mix(in oklab, var(--color-primary) 35%, transparent),
+    inset 0 0 12px color-mix(in oklab, var(--color-primary) 25%, transparent);
+  animation: halo-a 6s linear infinite !important;
+}
+.p3-halo span:nth-child(2) {
+  width: 360px; height: 360px; margin: -180px 0 0 -180px; border-color: var(--color-accent);
+  border-style: dashed;
+  box-shadow: 0 0 12px color-mix(in oklab, var(--color-accent) 35%, transparent),
+    inset 0 0 12px color-mix(in oklab, var(--color-accent) 25%, transparent);
+  animation: halo-b 9s linear infinite !important;
+}
+@keyframes halo-a { from { transform: rotateX(72deg) rotateZ(0); } to { transform: rotateX(72deg) rotateZ(360deg); } }
+@keyframes halo-b { from { transform: rotateY(65deg) rotateX(20deg) rotateZ(0); } to { transform: rotateY(65deg) rotateX(20deg) rotateZ(-360deg); } }
+.p3-halo span::before {
+  content: ""; position: absolute; inset: -7px; border-radius: inherit;
+  border: 2px solid transparent; border-top-color: var(--color-foreground);
+  border-right-color: color-mix(in oklab, var(--color-primary) 55%, transparent);
+  filter: drop-shadow(0 0 4px var(--color-primary));
+}
+.p3-halo span::after {
+  content: ""; position: absolute; top: -5px; left: 50%; width: 10px; height: 10px; border-radius: 50%;
+  background: var(--color-foreground); box-shadow: 0 0 14px var(--color-foreground);
+}
+@media (max-width: 640px) { .p3-halo span { transform-origin: center; scale: .62; } }
+
+/* Front face: pure midnight-black glass with the logo — no photo lock screen bleeding at the edges */
+.p3-front > img { display: none !important; }
+.p3-front {
+  background: oklch(0.04 0.005 265) !important;
+  /* outer ring + drop shadow so the lifted black screen reads against the dark stage */
+  box-shadow: inset 0 0 0 2px oklch(0.32 0.02 260), inset 0 0 0 5px oklch(0.02 0 0),
+    0 0 0 1px oklch(0.6 0.03 260), 0 24px 45px oklch(0 0 0 / .7),
+    0 0 34px color-mix(in oklab, var(--color-accent) 45%, transparent);
+}
+
+.p3-front .p3-wall { inset: 5px; border-radius: calc(var(--r) - 5px); background: oklch(0.04 0.005 265); box-shadow: none; }
+.p3-back {
+  box-shadow: inset 0 0 0 1px var(--phone-metal),
+    0 0 18px color-mix(in oklab, var(--color-accent) 28%, transparent);
+}
+.p3-glare {
+  background: linear-gradient(115deg, transparent 44%, color-mix(in oklab, var(--color-foreground) 18%, transparent) 49%, color-mix(in oklab, var(--color-accent) 12%, transparent) 52%, transparent 57%);
+  animation: phone-light-sweep 8s ease-in-out infinite !important;
+  pointer-events: none;
+}
+@keyframes phone-light-sweep {
+  0%,100% { transform: translateX(-45%); opacity: .3; }
+  12.5% { transform: translateX(40%); opacity: .8; }
+  45% { transform: translateX(-20%); opacity: .35; }
+  75% { transform: translateX(35%); opacity: .65; }
+}
+.p3-board::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(to bottom, transparent 35%, color-mix(in oklab, var(--color-primary) 45%, transparent) 49%, transparent 63%);
+  animation: circuit-scan 8s linear infinite !important;
+}
+@keyframes circuit-scan {
+  0% { transform: translateY(-45%); opacity: 0; }
+  5% { opacity: .9; }
+  12.5% { transform: translateY(45%); opacity: 0; }
+  100% { transform: translateY(45%); opacity: 0; }
+}
+.p3-front .p3-wall::before {
+  content: ""; position: absolute; top: 7px; left: 50%; width: 34%; height: 9px; transform: translateX(-50%);
+  border-radius: 99px; background: oklch(0 0 0); z-index: 2;
+}
+.p3-mark {
+  position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 19px; font-family: var(--font-display); font-weight: 900; font-size: 1rem; line-height: 1.1; letter-spacing: 0;
+  animation: wall-glow 3.2s ease-in-out infinite !important;
+}
+.p3-emblem {
+  position: relative; display: grid; place-items: center; width: 88px; height: 88px;
+  border: 1px solid var(--color-accent); border-radius: 50%;
+  box-shadow: inset 0 0 20px color-mix(in oklab, var(--color-accent) 22%, transparent);
+}
+.p3-emblem::before { content: ""; position: absolute; inset: 8px; border: 1px solid var(--color-primary); border-radius: 50%; transform: rotate(-30deg) scaleY(.56); }
+.p3-emblem span { position: relative; font-size: 27px; font-style: italic; color: var(--color-primary); text-shadow: var(--phone-logo-shadow); }
+.p3-emblem i { position: absolute; right: 5px; top: 17px; width: 8px; height: 8px; background: var(--color-primary); transform: rotate(45deg); box-shadow: var(--phone-logo-shadow); }
+.p3-wordmark { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.p3-wordmark span:first-child { color: var(--color-foreground); }
+.p3-wordmark span:last-child { color: var(--color-primary); text-shadow: var(--phone-logo-shadow); }
+.p3-mark-line { width: 28px; height: 2px; background: var(--color-accent); }
+.p3-camera { position: absolute; top: 5%; left: 7%; width: 18px; height: 18px; border: 4px solid var(--phone-metal); border-radius: 50%; background: var(--phone-glass); }
+.p3-connector { position: absolute; bottom: 4%; left: 35%; width: 30%; height: 7px; border: 1px solid var(--color-primary); background: var(--phone-glass); }
+.stage3d::after {
+  content: ""; position: absolute; inset: auto 0 0; height: 150px; z-index: 2; pointer-events: none;
+  background: linear-gradient(to bottom, transparent, color-mix(in oklab, var(--color-background) 35%, transparent) 30%, color-mix(in oklab, var(--color-background) 85%, transparent) 70%, var(--color-background));
+}
+@media (max-width: 640px) {
+  .stage3d { --orbit-radius: 50px; }
+  .phone3d { --w: 140px; --h: 284px; --r: 24px; }
+  .p3-emblem { width: 76px; height: 76px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stage3d *, .stage3d *::after { animation: none !important; }
+  .phone3d { transform: rotateY(-22deg); }
+}
