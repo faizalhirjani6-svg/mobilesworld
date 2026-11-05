@@ -371,16 +371,19 @@ function SamuraiSvg() {
       className="intro-samurai-svg"
       preserveAspectRatio="xMidYMax meet"
     >
-      {/* katana blade — horizontal, extends from the right hand */}
-      <line x1={170} y1={250} x2={460} y2={248} strokeWidth={4} style={{ stroke: "var(--color-primary)", filter: "drop-shadow(0 0 6px var(--color-primary))" }} />
-      <line x1={170} y1={250} x2={460} y2={248} strokeWidth={10} style={{ stroke: "var(--color-primary)", opacity: 0.12 }} />
-      {/* tsuba (guard) */}
-      <rect x={164} y={244} width={10} height={14} rx={2} style={{ fill: "var(--color-accent)" }} />
-      {/* tsuka (handle) */}
-      <line x1={150} y1={252} x2={166} y2={250} strokeWidth={7} style={{ stroke: "var(--color-foreground)" }} />
-      {/* wrapping on handle */}
-      <line x1={153} y1={251} x2={155} y2={254} strokeWidth={2} style={{ stroke: "var(--color-accent)" }} />
-      <line x1={158} y1={251} x2={160} y2={254} strokeWidth={2} style={{ stroke: "var(--color-accent)" }} />
+      {/* katana — wrapped in a group so CSS can animate the swing */}
+      <g className="intro-katana" style={{ transformOrigin: "168px 250px" }}>
+        {/* blade */}
+        <line x1={170} y1={250} x2={460} y2={248} strokeWidth={4} style={{ stroke: "var(--color-primary)", filter: "drop-shadow(0 0 6px var(--color-primary))" }} />
+        <line x1={170} y1={250} x2={460} y2={248} strokeWidth={10} style={{ stroke: "var(--color-primary)", opacity: 0.12 }} />
+        {/* tsuba (guard) */}
+        <rect x={164} y={244} width={10} height={14} rx={2} style={{ fill: "var(--color-accent)" }} />
+        {/* tsuka (handle) */}
+        <line x1={150} y1={252} x2={166} y2={250} strokeWidth={7} style={{ stroke: "var(--color-foreground)" }} />
+        {/* wrapping on handle */}
+        <line x1={153} y1={251} x2={155} y2={254} strokeWidth={2} style={{ stroke: "var(--color-accent)" }} />
+        <line x1={158} y1={251} x2={160} y2={254} strokeWidth={2} style={{ stroke: "var(--color-accent)" }} />
+      </g>
 
       {/* kabuto (helmet) — domed top */}
       <path d="M 100 60 Q 150 18 200 60 L 205 85 L 95 85 Z" style={{ fill: "color-mix(in oklab, var(--color-foreground) 14%, var(--color-background))", stroke: "var(--color-foreground)", strokeWidth: 3 }} />
@@ -557,12 +560,14 @@ export function Intro() {
       </div>
       <div className={`intro-phone-screen is-${phase}`}>
         <div className="intro-phone-glow" />
+        <div className="intro-phone-crack" />
       </div>
       <div className="intro-slash-fx is-${phase}">
         <span className="intro-slash-line" />
         <span className="intro-slash-flash" />
         <span className="intro-slash-shockwave" />
       </div>
+      <div className="intro-burst" />
       <div ref={mark} className={`intro-mark is-${phase}`}>
         <div ref={word} className="intro-word">
           <IntroLetters text={INTRO_WORD_A} offset={0} />
