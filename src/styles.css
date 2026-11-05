@@ -109,6 +109,26 @@
   .screen-slash-intro { display: none; }
 }
 
+/* Covers the "Made with Manus" watermark in the bottom-right of the intro video.
+   Solid black core with a soft gradient edge so it blends into the dark background. */
+.intro-watermark-cover {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 26%;
+  max-width: 340px;
+  height: 12%;
+  min-height: 48px;
+  background:
+    radial-gradient(120% 100% at 100% 100%, var(--color-background) 60%, transparent 100%),
+    linear-gradient(to top right, var(--color-background) 55%, transparent 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+@media (max-width: 640px) {
+  .intro-watermark-cover { width: 38%; height: 14%; min-height: 38px; }
+}
+
 /* Scroll glide: items slide in from the direction they were left, out the way they are scrolled */
 .reveal {
   opacity: 0;
