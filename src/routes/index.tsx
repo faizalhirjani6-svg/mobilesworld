@@ -2,6 +2,9 @@ import type { ReactNode } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Header, Footer, Reveal, Photo, ScrollProgress, GlideLink } from "@/components/site";
 import { ShopPhotoStrip } from "@/components/shop-photo-strip";
+import { ScreenSlashIntro } from "@/components/screen-slash-intro";
+import slashVideo from "@/assets/mobile-world-screen-slash.mp4.asset.json";
+import slashPoster from "@/assets/mobile-world-screen-slash-poster.jpg.asset.json";
 import shopShelves from "@/assets/shop-shelves-enhanced.jpg";
 import shopChargers from "@/assets/shop-chargers-enhanced.jpg";
 import shopStickers from "@/assets/shop-stickers-enhanced.jpg";
@@ -92,6 +95,7 @@ const brands = ["Apple", "Samsung", "OnePlus", "Xiaomi", "Vivo", "Oppo", "Realme
 function Index() {
   return (
     <div className="min-h-screen overflow-x-clip">
+      <ScreenSlashIntro src={slashVideo.url} poster={slashPoster.url} />
       <ScrollProgress />
       <Header />
 
