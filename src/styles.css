@@ -78,6 +78,20 @@
 
 .opening-section, .opening-content { min-height: 88vh; min-height: 88svh; }
 
+.screen-slash-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: var(--color-background);
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 450ms ease;
+}
+.screen-slash-intro.is-fading { opacity: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .screen-slash-intro { display: none; }
+}
+
 /* Scroll glide: items slide in from the direction they were left, out the way they are scrolled */
 .reveal {
   opacity: 0;
