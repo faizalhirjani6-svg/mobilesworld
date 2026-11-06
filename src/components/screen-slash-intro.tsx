@@ -52,6 +52,7 @@ export function ScreenSlashIntro({ src, poster }: { src: string; poster?: string
   if (!playing) return null;
   return (
     <div className={`screen-slash-intro is-in${fading ? " is-fading" : ""}`} aria-hidden="true">
+      <div className="intro-video-frame">
       <video
         ref={video}
         src={src}
@@ -66,6 +67,7 @@ export function ScreenSlashIntro({ src, poster }: { src: string; poster?: string
         className="h-full w-full object-contain"
       />
       <div className="intro-watermark-cover" />
+      </div>
     </div>
   );
 }

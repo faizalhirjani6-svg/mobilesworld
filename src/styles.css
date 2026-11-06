@@ -109,24 +109,27 @@
   .screen-slash-intro { display: none; }
 }
 
-/* Covers the "Made with Manus" watermark in the bottom-right of the intro video.
-   Solid black core with a soft gradient edge so it blends into the dark background. */
+/* Match the actual contained video, including portrait-screen letterboxing. */
+.intro-video-frame {
+  position: absolute;
+  width: min(100%, 175svh);
+  aspect-ratio: 7 / 4;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  --intro-mask: #03070b;
+  --intro-mask-shadow: 0 0 12px 8px var(--intro-mask);
+}
 .intro-watermark-cover {
   position: absolute;
-  right: 0;
-  bottom: 0;
-  width: 26%;
-  max-width: 340px;
-  height: 12%;
-  min-height: 48px;
-  background:
-    radial-gradient(120% 100% at 100% 100%, var(--color-background) 60%, transparent 100%),
-    linear-gradient(to top right, var(--color-background) 55%, transparent 100%);
+  right: 1.5%;
+  bottom: 2.9%;
+  width: 14.8%;
+  height: 5.5%;
+  background: var(--intro-mask);
+  box-shadow: var(--intro-mask-shadow);
   pointer-events: none;
   z-index: 2;
-}
-@media (max-width: 640px) {
-  .intro-watermark-cover { width: 38%; height: 14%; min-height: 38px; }
 }
 
 /* Scroll glide: items slide in from the direction they were left, out the way they are scrolled */
