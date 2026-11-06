@@ -16,3 +16,4 @@
 - Use a single muted, inline video opening with session-only playback and reduced-motion opt-out, so the edited user clip replaces both old logo and phone animations without obstructing navigation.
 - Use the dedicated Embla photo strip for gallery movement, keeping continuous looping and touch dragging in one place and respecting reduced motion.
 - Use constrained grid tracks for narrow header and text rows; pause opening video playback while the document is hidden to reduce background rendering.
+- Anchor video overlays to the contained footage's aspect-ratio frame, not the viewport, so they remain aligned through letterboxing.
