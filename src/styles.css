@@ -122,10 +122,10 @@
 }
 .intro-watermark-cover {
   position: absolute;
-  right: 1.5%;
-  bottom: 2.9%;
-  width: 14.8%;
-  height: 5.5%;
+  right: 0;
+  bottom: 0;
+  width: 18%;
+  height: 10%;
   background: var(--intro-mask);
   box-shadow: var(--intro-mask-shadow);
   pointer-events: none;
