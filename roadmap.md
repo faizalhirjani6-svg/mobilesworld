@@ -1,6 +1,7 @@
 # Security and Netlify readiness
 
 ## Current requests
+- [x] Extend the watermark cover to the footage edges so it remains hidden during every sword-cut frame.
 - [x] Hide the opening video's watermark with a subtle cover aligned on phones and desktop.
 - [x] Make shop squares slightly bigger while keeping two per mobile row.
 - [ ] Replace the current animation using only the supplied samurai video, lasting at least five seconds, with a screen slash and Mobile World logo reveal.
