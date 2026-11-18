@@ -103,7 +103,7 @@ function ShopPage() {
               <li key={product.id} className="flex">
                 <Reveal dir="y" delay={i * 60} className="flex w-full">
                   <article
-                    className={`flex aspect-square w-full flex-col overflow-hidden rounded-lg border bg-card text-card-foreground transition-shadow duration-300 hover:-translate-y-1 hover:shadow-md ${
+                    className={`flex aspect-[4/5] w-full flex-col overflow-hidden rounded-lg border bg-card text-card-foreground transition-shadow duration-300 hover:-translate-y-1 hover:shadow-md ${
                       justAdded === product.id ? "card-added" : ""
                     }`}
                   >
