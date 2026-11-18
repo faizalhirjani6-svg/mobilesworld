@@ -13,7 +13,6 @@
 - No credential-backed integrations exist; do not add empty API proxies, and keep future secrets inside server handlers with explicit response allowlists.
 - Error diagnostics use fixed messages rather than raw messages, stacks, causes or context because arbitrary error data can contain credentials.
 - Run the credential guard on source and public build artifacts before Netlify deploys; server bundles must never be in the public publish directory.
-- Use a single muted, inline video opening with session-only playback and reduced-motion opt-out, so the edited user clip replaces both old logo and phone animations without obstructing navigation.
+- Use one CSS logo-impact opening with session-only playback and reduced-motion opt-out; keep it non-interactive and pause its animations when the document is hidden to avoid obstructing navigation or background rendering.
 - Use the dedicated Embla photo strip for gallery movement, keeping continuous looping and touch dragging in one place and respecting reduced motion.
-- Use constrained grid tracks for narrow header and text rows; pause opening video playback while the document is hidden to reduce background rendering.
-- Anchor video overlays to the contained footage's aspect-ratio frame, not the viewport, so they remain aligned through letterboxing.
+- Use constrained grid tracks for narrow header and text rows to prevent overflow across device sizes.
