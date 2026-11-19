@@ -39,28 +39,6 @@ function reducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-/* ---------- intro gate: holds reveals until the screen-slash intro finishes ---------- */
-const INTRO_EVENT = "mw-intro-complete";
-let introDone = false;
-
-export function signalIntroComplete() {
-  if (introDone) return;
-  introDone = true;
-  window.dispatchEvent(new CustomEvent(INTRO_EVENT));
-}
-
-function onIntroDone(cb: () => void) {
-  if (introDone || typeof window === "undefined") {
-    cb();
-    return;
-  }
-  const handler = () => {
-    window.removeEventListener(INTRO_EVENT, handler);
-    cb();
-  };
-  window.addEventListener(INTRO_EVENT, handler);
-}
-
 /* ---------- glide hook: enters and exits on every crossing ---------- */
 function useGlide(ref: RefObject<HTMLElement | null>, vertical: boolean, distance = 56) {
   useEffect(() => {
@@ -78,28 +56,22 @@ function useGlide(ref: RefObject<HTMLElement | null>, vertical: boolean, distanc
       if (el.style.getPropertyValue("--from-y") !== next) el.style.setProperty("--from-y", next);
     };
 
-    let io: IntersectionObserver | null = null;
-    const start = () => {
-      io = new IntersectionObserver(
-        ([e]) => {
-          if (!e) return;
-          el.classList.toggle("in", e.isIntersecting);
-          if (!e.isIntersecting && vertical) {
-            const next = scrollDir === 1 ? `-${distance}px` : `${distance}px`;
-            el.style.setProperty("--from-y", next);
-          }
-        },
-        { threshold: 0.15, rootMargin: "-5% 0px -5% 0px" },
-      );
-      io.observe(el);
-      park();
-    };
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (!e) return;
+        el.classList.toggle("in", e.isIntersecting);
+        // leaving: glide away in the direction of the scroll
+        if (!e.isIntersecting && vertical) {
+          const next = scrollDir === 1 ? `-${distance}px` : `${distance}px`;
+          el.style.setProperty("--from-y", next);
+        }
+      },
+      { threshold: 0.15, rootMargin: "-5% 0px -5% 0px" },
+    );
+    io.observe(el);
 
-    // Wait for the screen-slash intro to finish before activating reveals,
-    // so content doesn't animate behind the overlay and is missed.
-    onIntroDone(start);
-
-    return () => io?.disconnect();
+    park();
+    return () => io.disconnect();
   }, [ref, vertical, distance]);
 }
 
@@ -232,8 +204,10 @@ export function Header() {
         <div className="ml-auto flex shrink-0 items-center gap-5">
           <nav className="hidden items-center gap-5 text-sm lg:flex" aria-label="Shop sections">
             <a href="/#services" className="text-muted-foreground">Services</a>
+            <a href="/#our-work" className="text-muted-foreground">Our Work</a>
             <a href="/#process" className="text-muted-foreground">Process</a>
             <a href="/#audio" className="text-muted-foreground">Audio</a>
+            <a href="/#reviews" className="text-muted-foreground">Reviews</a>
           </nav>
           <nav aria-label="Main navigation" className="flex shrink-0 items-center gap-1 whitespace-nowrap [&_.nav-link]:text-xs sm:[&_.nav-link]:text-sm">
             <Link
@@ -268,28 +242,32 @@ export function Header() {
 
 export function Footer() {
   return (
-    <footer className="contact-footer border-t">
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-6 px-5 pt-10">
-        <p className="font-display text-xl font-bold">MOBILE<span className="text-primary">WORLD</span></p>
-        <a href="tel:+919104262340" className="footer-call text-lg font-semibold text-primary">+91 91042 62340 ↗</a>
-      </div>
-      <div className="mx-auto flex max-w-6xl flex-col gap-4 px-5 py-10 text-sm text-muted-foreground sm:flex-row sm:justify-between">
-        <p>© {new Date().getFullYear()} Mobile World. All repairs carry a written warranty.</p>
-        <div className="flex shrink-0 flex-wrap gap-x-6 gap-y-3">
-          <Link
-            to="/terms"
-            inactiveProps={{ className: "nav-foot" }}
-            activeProps={{ className: "nav-foot is-active" }}
-          >
-            Terms of Service
-          </Link>
-          <Link
-            to="/privacy"
-            inactiveProps={{ className: "nav-foot" }}
-            activeProps={{ className: "nav-foot is-active" }}
-          >
-            Privacy&Policy
-          </Link>
+    <footer className="footer-glow">
+      <div className="mx-auto max-w-6xl px-5 py-14">
+        <div className="flex flex-col gap-10 sm:flex-row sm:justify-between">
+          <div className="max-w-xs">
+            <p className="footer-brand text-lg">MOBILE<span>WORLD</span></p>
+            <p className="footer-tag mt-2">Phone repair &amp; audio</p>
+            <p className="mt-4 text-sm text-muted-foreground">
+              © {new Date().getFullYear()} Mobile World. All repairs carry a written warranty.
+            </p>
+          </div>
+          <div className="flex shrink-0 flex-wrap gap-x-8 gap-y-3 text-sm">
+            <Link
+              to="/terms"
+              inactiveProps={{ className: "footer-link" }}
+              activeProps={{ className: "footer-link is-active" }}
+            >
+              Terms of Service
+            </Link>
+            <Link
+              to="/privacy"
+              inactiveProps={{ className: "footer-link" }}
+              activeProps={{ className: "footer-link is-active" }}
+            >
+              Privacy&Policy
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
@@ -369,4 +347,116 @@ export function Parallax({ children, speed = 0.15 }: { children: ReactNode; spee
     };
   }, [speed]);
   return <div ref={ref} className="will-change-transform">{children}</div>;
+}
+
+/* ---------- intro: the logo takes the screen, then glides up into the header ---------- */
+const INTRO_KEY = "mw-intro-played";
+const INTRO_HOLD = 1250;
+const INTRO_GLIDE = 850;
+const INTRO_WORD_A = "MOBILE";
+const INTRO_WORD_B = "WORLD";
+
+function IntroLetters({ text, offset }: { text: string; offset: number }) {
+  return (
+    <>
+      {text.split("").map((c, i) => (
+        <span
+          key={`${text}-${i}`}
+          className="intro-letter"
+          style={{ "--i": offset + i } as CSSProperties}
+        >
+          {c}
+        </span>
+      ))}
+    </>
+  );
+}
+
+export function Intro() {
+  const [playing, setPlaying] = useState(false);
+  const [phase, setPhase] = useState<"idle" | "in" | "glide" | "out">("idle");
+  const mark = useRef<HTMLDivElement>(null);
+  const word = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    let played = false;
+    try {
+      played = sessionStorage.getItem(INTRO_KEY) === "1";
+    } catch {
+      /* storage blocked: replaying the intro is harmless */
+    }
+    if (played || reducedMotion()) return;
+
+    try {
+      sessionStorage.setItem(INTRO_KEY, "1");
+    } catch {
+      /* same */
+    }
+
+    const html = document.documentElement;
+    html.classList.add("intro-live");
+    setPlaying(true);
+
+    const timers: number[] = [];
+    let raf = 0;
+
+    const finish = () => {
+      html.classList.add("intro-done");
+      html.classList.remove("intro-live", "intro-reveal");
+      setPlaying(false);
+    };
+
+    const glide = () => {
+      const m = mark.current;
+      const w = word.current;
+      const target = document.querySelector<HTMLElement>("[data-header-logo]");
+      if (m && w && target) {
+        const mr = m.getBoundingClientRect();
+        const wr = w.getBoundingClientRect();
+        const tr = target.getBoundingClientRect();
+        const cx = wr.left + wr.width / 2;
+        const cy = wr.top + wr.height / 2;
+        m.style.setProperty("--origin-x", `${cx - mr.left}px`);
+        m.style.setProperty("--origin-y", `${cy - mr.top}px`);
+        m.style.setProperty("--glide-x", `${tr.left + tr.width / 2 - cx}px`);
+        m.style.setProperty("--glide-y", `${tr.top + tr.height / 2 - cy}px`);
+        m.style.setProperty("--glide-s", String(Math.max(0.05, tr.width / Math.max(1, wr.width))));
+      }
+      html.classList.add("intro-reveal");
+      setPhase("glide");
+      timers.push(window.setTimeout(() => setPhase("out"), INTRO_GLIDE));
+      timers.push(window.setTimeout(finish, INTRO_GLIDE + 180));
+    };
+
+    raf = requestAnimationFrame(() => {
+      raf = requestAnimationFrame(() => {
+        setPhase("in");
+        timers.push(window.setTimeout(glide, INTRO_HOLD));
+      });
+    });
+
+    return () => {
+      cancelAnimationFrame(raf);
+      timers.forEach((t) => window.clearTimeout(t));
+      html.classList.add("intro-done");
+      html.classList.remove("intro-live", "intro-reveal");
+    };
+  }, []);
+
+  if (!playing) return null;
+
+  return (
+    <div className={`intro-splash is-${phase}`} aria-hidden="true">
+      <div className="intro-floor" />
+      <div ref={mark} className="intro-mark">
+        <div ref={word} className="intro-word">
+          <IntroLetters text={INTRO_WORD_A} offset={0} />
+          <span className="intro-word-b">
+            <IntroLetters text={INTRO_WORD_B} offset={INTRO_WORD_A.length} />
+          </span>
+        </div>
+        <div className="intro-tag">Phone repair &amp; audio</div>
+      </div>
+    </div>
+  );
 }
