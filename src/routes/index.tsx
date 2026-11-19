@@ -5,6 +5,7 @@ import { ShopPhotoStrip } from "@/components/shop-photo-strip";
 import { LogoSlamIntro } from "@/components/logo-slam-intro";
 import { LazyProductVisual } from "@/components/lazy-product-visual";
 import { RepairComparison } from "@/components/repair-comparison";
+import { Reviews } from "@/components/reviews";
 import shopShelves from "@/assets/shop-shelves-enhanced.jpg";
 import shopChargers from "@/assets/shop-chargers-enhanced.jpg";
 import shopStickers from "@/assets/shop-stickers-enhanced.jpg";
@@ -223,6 +224,8 @@ function Index() {
           ))}
         </ShopPhotoStrip>
       </section>
+
+      <Reviews />
 
       {/* Process: big numbers, open layout */}
       <section id="process" className="bg-accent text-accent-foreground">
