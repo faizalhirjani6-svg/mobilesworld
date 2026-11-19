@@ -206,7 +206,6 @@ export function Header() {
             <a href="/#services" className="text-muted-foreground">Services</a>
             <a href="/#process" className="text-muted-foreground">Process</a>
             <a href="/#audio" className="text-muted-foreground">Audio</a>
-            <a href="/#reviews" className="text-muted-foreground">Reviews</a>
           </nav>
           <nav aria-label="Main navigation" className="flex shrink-0 items-center gap-1 whitespace-nowrap [&_.nav-link]:text-xs sm:[&_.nav-link]:text-sm">
             <Link
@@ -241,12 +240,12 @@ export function Header() {
 
 export function Footer() {
   return (
-    <footer className="footer-glow">
+    <footer className="border-t bg-background">
       <div className="mx-auto max-w-6xl px-5 py-14">
         <div className="flex flex-col gap-10 sm:flex-row sm:justify-between">
           <div className="max-w-xs">
-            <p className="footer-brand text-lg">MOBILE<span>WORLD</span></p>
-            <p className="footer-tag mt-2">Phone repair &amp; audio</p>
+            <p className="font-display text-lg font-black">MOBILE<span className="text-primary">WORLD</span></p>
+            <p className="mt-2 text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">Phone repair &amp; audio</p>
             <p className="mt-4 text-sm text-muted-foreground">
               © {new Date().getFullYear()} Mobile World. All repairs carry a written warranty.
             </p>
@@ -254,15 +253,15 @@ export function Footer() {
           <div className="flex shrink-0 flex-wrap gap-x-8 gap-y-3 text-sm">
             <Link
               to="/terms"
-              inactiveProps={{ className: "footer-link" }}
-              activeProps={{ className: "footer-link is-active" }}
+              inactiveProps={{ className: "nav-foot" }}
+              activeProps={{ className: "nav-foot is-active" }}
             >
               Terms of Service
             </Link>
             <Link
               to="/privacy"
-              inactiveProps={{ className: "footer-link" }}
-              activeProps={{ className: "footer-link is-active" }}
+              inactiveProps={{ className: "nav-foot" }}
+              activeProps={{ className: "nav-foot is-active" }}
             >
               Privacy&Policy
             </Link>

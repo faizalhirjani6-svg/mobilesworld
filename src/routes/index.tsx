@@ -6,8 +6,6 @@ import { useEffect, useRef } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Header, Footer, Reveal, Photo, ScrollProgress, GlideLink } from "@/components/site";
 import { ShopPhotoStrip } from "@/components/shop-photo-strip";
-import { Testimonials } from "@/components/testimonials";
-import { FloatingHeadphones } from "@/components/floating-headphones";
 import shopShelves from "@/assets/shop-shelves-enhanced.jpg";
 import shopChargers from "@/assets/shop-chargers-enhanced.jpg";
 import shopStickers from "@/assets/shop-stickers-enhanced.jpg";
@@ -215,10 +213,6 @@ function Index() {
             </p>
           </Reveal>
 
-          <Reveal dir="y" delay={200} className="mt-10">
-            <FloatingHeadphones />
-          </Reveal>
-
           <ShopGrid items={audio} />
 
           <Reveal dir="y" className="mt-20">
@@ -289,9 +283,6 @@ function Index() {
           </ol>
         </div>
       </section>
-
-      {/* Reviews */}
-      <Testimonials />
 
       {/* Visit */}
       <section id="visit">

@@ -4,7 +4,6 @@ import { Header, Footer, Reveal } from "@/components/site";
 import { ShopCartSheet } from "@/components/shop-cart-sheet";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
-import { useTilt } from "@/hooks/use-tilt";
 import { playAddToCartSound, playRemoveFromCartSound } from "@/lib/cart-sound";
 import { SHOP_PRODUCTS, formatPrice, type ShopProduct } from "@/lib/shop-products";
 
@@ -33,12 +32,11 @@ function ProductCard({
   onAdd: () => void;
   onRemove: () => void;
 }) {
-  const tilt = useTilt(8);
   return (
-    <div className="tilt-card flex w-full" ref={tilt.ref} onMouseMove={tilt.onMove} onMouseLeave={tilt.onLeave} style={tilt.style}>
+    <div className="flex w-full">
       <article className="flex w-full flex-col overflow-hidden rounded-lg border bg-card text-card-foreground transition-shadow duration-300 hover:shadow-lg">
         <div className="skeleton aspect-square w-full" aria-hidden />
-        <div className="tilt-pop flex flex-1 flex-col gap-3 p-4">
+        <div className="flex flex-1 flex-col gap-3 p-4">
           <h2 className="line-clamp-2 min-h-[2.5rem] text-sm font-semibold sm:text-base">{product.name}</h2>
           <p className="mt-auto text-sm font-bold text-primary">{formatPrice(product.price)}</p>
           {quantity === 0 ? (
