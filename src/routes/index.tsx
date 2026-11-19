@@ -6,7 +6,6 @@ import { useEffect, useRef } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Header, Footer, Reveal, Photo, ScrollProgress, GlideLink } from "@/components/site";
 import { ShopPhotoStrip } from "@/components/shop-photo-strip";
-import { BeforeAfter } from "@/components/before-after";
 import { Testimonials } from "@/components/testimonials";
 import { FloatingHeadphones } from "@/components/floating-headphones";
 import shopShelves from "@/assets/shop-shelves-enhanced.jpg";
@@ -240,9 +239,6 @@ function Index() {
           </Reveal>
         </div>
       </section>
-
-      {/* Our work: before/after repair comparisons */}
-      <BeforeAfter />
 
       {/* Inside the shop */}
       <section id="shop-gallery" className="py-24">

@@ -204,7 +204,6 @@ export function Header() {
         <div className="ml-auto flex shrink-0 items-center gap-5">
           <nav className="hidden items-center gap-5 text-sm lg:flex" aria-label="Shop sections">
             <a href="/#services" className="text-muted-foreground">Services</a>
-            <a href="/#our-work" className="text-muted-foreground">Our Work</a>
             <a href="/#process" className="text-muted-foreground">Process</a>
             <a href="/#audio" className="text-muted-foreground">Audio</a>
             <a href="/#reviews" className="text-muted-foreground">Reviews</a>
