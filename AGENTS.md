@@ -16,3 +16,6 @@
 - Use one CSS logo-impact opening with session-only playback and reduced-motion opt-out; keep it non-interactive and pause its animations when the document is hidden to avoid obstructing navigation or background rendering.
 - Use the dedicated Embla photo strip for gallery movement, keeping continuous looping and touch dragging in one place and respecting reduced motion.
 - Use constrained grid tracks for narrow header and text rows to prevent overflow across device sizes.
+- Decorative GLB scenes are dynamically imported after visibility detection; unmount offscreen/hidden scenes, cap mobile DPR, and respect reduced motion to avoid background GPU work.
+- Keep repair comparisons explicitly illustrative until matching real photos are supplied; never invent customer testimonials or imply illustrative models are specific inventory.
+- Use CSS pointer tilt for repeated shop cards rather than a WebGL context per card to keep the catalog lightweight.

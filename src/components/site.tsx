@@ -268,7 +268,11 @@ export function Header() {
 
 export function Footer() {
   return (
-    <footer className="border-t">
+    <footer className="contact-footer border-t">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-6 px-5 pt-10">
+        <p className="font-display text-xl font-bold">MOBILE<span className="text-primary">WORLD</span></p>
+        <a href="tel:+919104262340" className="footer-call text-lg font-semibold text-primary">+91 91042 62340 ↗</a>
+      </div>
       <div className="mx-auto flex max-w-6xl flex-col gap-4 px-5 py-10 text-sm text-muted-foreground sm:flex-row sm:justify-between">
         <p>© {new Date().getFullYear()} Mobile World. All repairs carry a written warranty.</p>
         <div className="flex shrink-0 flex-wrap gap-x-6 gap-y-3">

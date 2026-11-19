@@ -4,6 +4,15 @@ import { Minus, Plus } from "lucide-react";
 import { Header, Footer, Reveal } from "@/components/site";
 import { ShopCartSheet } from "@/components/shop-cart-sheet";
 import { Button } from "@/components/ui/button";
+import { ProductTilt } from "@/components/product-tilt";
+import headphonesPhoto from "@/assets/headphones.jpg";
+import earbudsPhoto from "@/assets/earbuds-hand-real.jpg";
+import powerBankPhoto from "@/assets/power-bank.jpg";
+import wiredPhoto from "@/assets/wired.jpg";
+import neckbandPhoto from "@/assets/neckband.jpg";
+import speakerPhoto from "@/assets/bluetooth-speaker.jpg";
+import chargerPhoto from "@/assets/charging-cable.jpg";
+import watchPhoto from "@/assets/smartwatch.jpg";
 import { useCart } from "@/hooks/use-cart";
 import { playAddToCartSound, playRemoveFromCartSound } from "@/lib/cart-sound";
 import { SHOP_PRODUCTS, formatPrice, type ShopProduct } from "@/lib/shop-products";
@@ -23,6 +32,7 @@ export const Route = createFileRoute("/shop")({
 });
 
 /** Sends a small glowing dot arcing from the product card into the cart button. */
+const productPhotos = [earbudsPhoto, headphonesPhoto, powerBankPhoto, wiredPhoto, neckbandPhoto, speakerPhoto, chargerPhoto, watchPhoto];
 function flyToCart(card: HTMLElement) {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   const target = document.querySelector<HTMLElement>("[data-cart-trigger]");
@@ -102,12 +112,16 @@ function ShopPage() {
             return (
               <li key={product.id} className="flex">
                 <Reveal dir="y" delay={i * 60} className="flex w-full">
+                  <ProductTilt className="w-full">
                   <article
                     className={`flex aspect-[4/5] w-full flex-col overflow-hidden rounded-lg border bg-card text-card-foreground transition-shadow duration-300 hover:-translate-y-1 hover:shadow-md ${
                       justAdded === product.id ? "card-added" : ""
                     }`}
                   >
-                    <div className="skeleton min-h-0 w-full flex-1" aria-hidden />
+                    <div className="relative min-h-0 w-full flex-1 overflow-hidden">
+                      <img src={productPhotos[i]} alt={`${product.name} category illustration`} className="h-full w-full object-cover" loading="lazy" decoding="async" />
+                      <span className="product-photo-label">Illustrative photo</span>
+                    </div>
                     <div className="flex flex-col gap-1.5 p-2.5 sm:gap-2.5 sm:p-4">
                       <h2 className="truncate text-sm font-semibold sm:min-h-[2.5rem] sm:line-clamp-2 sm:text-base">
                         {product.name}
@@ -121,11 +135,11 @@ function ShopPage() {
                           Add to cart
                         </Button>
                       ) : (
-                        <div className="flex items-center justify-between rounded-md border border-blue-600 bg-blue-600 text-white transition-colors duration-300">
+                        <div className="flex items-center justify-between rounded-md border border-primary bg-primary text-primary-foreground transition-colors duration-300">
                           <Button
                             size="icon"
                             variant="ghost"
-                            className="text-white hover:bg-white/20 hover:text-white"
+                            className="text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
                             aria-label={`Remove one ${product.name} from cart`}
                             onClick={() => {
                               setQuantity(product.id, quantity - 1);
@@ -140,7 +154,7 @@ function ShopPage() {
                           <Button
                             size="icon"
                             variant="ghost"
-                            className="text-white hover:bg-white/20 hover:text-white"
+                            className="text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
                             aria-label={`Add one more ${product.name} to cart`}
                             onClick={(e) => addToCart(product, e.currentTarget)}
                           >
@@ -150,6 +164,7 @@ function ShopPage() {
                       )}
                     </div>
                   </article>
+                  </ProductTilt>
                 </Reveal>
               </li>
             );

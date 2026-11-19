@@ -1,6 +1,9 @@
 # Security and Netlify readiness
 
 ## Current requests
+- [ ] Add lightweight smartphone and audio 3D, an exploded repair view, interactive shop presentation, and a before/after slider.
+- [ ] Add genuine animated testimonials — waiting for verified customer reviews.
+- [ ] Polish the dark contact/footer and verify mobile and desktop interactions.
 - [x] Replace the sword video with a Mobile World logo slam and verify phone and desktop playback.
 - [x] Extend the watermark cover to the footage edges so it remains hidden during every sword-cut frame.
 - [x] Hide the opening video's watermark with a subtle cover aligned on phones and desktop.

@@ -64,6 +64,9 @@
   --logo-emblem-glow: 0 12px 32px color-mix(in oklab, var(--primary) 14%, transparent);
   --logo-impact-line: color-mix(in oklab, var(--foreground) 40%, var(--accent));
   --logo-sheen: linear-gradient(110deg, transparent 35%, color-mix(in oklab, var(--foreground) 65%, transparent) 50%, transparent 65%);
+  --visual-grid: color-mix(in oklab, var(--border) 40%, transparent);
+  --visual-line: color-mix(in oklab, var(--primary) 45%, transparent);
+  --footer-glow: 0 0 18px color-mix(in oklab, var(--primary) 25%, transparent);
 }
 
 @layer base {
@@ -79,7 +82,42 @@
   a:focus-visible { outline: 2px solid var(--color-ring); outline-offset: 4px; }
 }
 
-.opening-section, .opening-content { min-height: 88vh; min-height: 88svh; }
+.opening-section, .opening-content { min-height: 88vh; min-height: min(88svh, 900px); }
+.product-visual { position: relative; width: 100%; height: 360px; overflow: hidden; }
+.visual-fallback { height: 100%; display: grid; place-items: center; font-family: var(--font-display); font-size: 48px; color: var(--primary); opacity: .3; }
+.opening-phone-scene { position: absolute; inset: 0; height: 100%; padding-left: 40%; pointer-events: none; }
+.repair-phone-scene { height: 360px; border-bottom: 1px solid var(--visual-line); }
+.audio-product-scene { height: 360px; margin-top: 24px; }
+.comparison-stage { position: relative; width: 100%; aspect-ratio: 640 / 420; overflow: hidden; border-block: 1px solid var(--border); background: var(--secondary); }
+.comparison-art { width: 100%; height: 100%; background-image: linear-gradient(var(--visual-grid) 1px, transparent 1px), linear-gradient(90deg, var(--visual-grid) 1px, transparent 1px); background-size: 32px 32px; }
+.comparison-frame { fill: var(--phone-metal); }
+.comparison-screen, .comparison-island { fill: var(--phone-glass); }
+.comparison-stripe { fill: none; stroke: var(--accent); stroke-width: 34; opacity: .25; }
+.comparison-logo { fill: var(--primary); font-family: var(--font-display); font-size: 44px; font-weight: 900; }
+.comparison-word { fill: var(--foreground); font-family: var(--font-sans); font-size: 12px; }
+.comparison-shadow { fill: var(--phone-shadow); }
+.comparison-cracks { fill: none; stroke: var(--foreground); stroke-width: 1.8; }
+.comparison-before { position: absolute; inset: 0; }
+.comparison-label { position: absolute; top: 20px; font-size: 14px; font-weight: 700; }
+.comparison-label-before { left: 20px; }
+.comparison-label-after { right: 20px; color: var(--primary); }
+.comparison-divider { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--primary); pointer-events: none; }
+.comparison-divider svg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 42px; height: 42px; padding: 9px; border-radius: 50%; background: var(--primary); color: var(--primary-foreground); }
+.comparison-control { position: absolute; inset: 0; height: 100%; opacity: 0; cursor: ew-resize; }
+.comparison-control [role=slider] { height: 100%; width: 44px; border: 0; }
+.comparison-stage:focus-within { outline: 2px solid var(--ring); outline-offset: 5px; }
+.product-tilt { perspective: 900px; }
+.product-tilt > article { transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)); transition: transform 180ms ease, box-shadow 300ms ease; }
+.product-photo-label { position: absolute; bottom: 5px; left: 5px; color: var(--foreground); background: var(--background); font-size: 9px; padding: 2px 4px; }
+.contact-footer { border-top-color: var(--visual-line); }
+.footer-call { text-shadow: var(--footer-glow); }
+@media (max-width: 767px) {
+  .opening-phone-scene { height: 320px; inset: 0 0 auto; padding-left: 35%; opacity: .55; }
+  .opening-content { padding-top: 210px; }
+  .repair-phone-scene, .audio-product-scene { height: 280px; }
+  .product-tilt > article { transform: none; }
+}
+@media (prefers-reduced-motion: reduce) { .product-tilt > article { transform: none; transition: none; } }
 
 .logo-slam-intro {
   position: fixed;

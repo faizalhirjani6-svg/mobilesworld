@@ -3,6 +3,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Header, Footer, Reveal, Photo, ScrollProgress, GlideLink } from "@/components/site";
 import { ShopPhotoStrip } from "@/components/shop-photo-strip";
 import { LogoSlamIntro } from "@/components/logo-slam-intro";
+import { LazyProductVisual } from "@/components/lazy-product-visual";
+import { RepairComparison } from "@/components/repair-comparison";
 import shopShelves from "@/assets/shop-shelves-enhanced.jpg";
 import shopChargers from "@/assets/shop-chargers-enhanced.jpg";
 import shopStickers from "@/assets/shop-stickers-enhanced.jpg";
@@ -100,18 +102,14 @@ function Index() {
 
       {/* Opening content follows the logo impact */}
       <section className="opening-section relative isolate overflow-hidden">
+        <LazyProductVisual kind="phone" className="opening-phone-scene" />
         <div className="opening-content relative z-10 mx-auto flex max-w-6xl flex-col justify-end px-5 pb-12 pt-12 sm:pb-16">
           <Reveal>
-            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-primary">Repairs and audio</p>
+            <p className="text-sm font-semibold uppercase text-primary">Repairs and audio</p>
           </Reveal>
           <Reveal delay={120}>
-            <h1 className="mt-5 text-5xl font-black leading-[0.95] sm:text-8xl">
-              Fix it.
-              <br />
-              <span className="font-serif font-normal italic text-accent">Hear it.</span>
-              <br />
-              <span className="text-primary">Love it.</span>
-            </h1>
+            <h1 className="mt-5 text-5xl font-black leading-[1.08] sm:text-7xl">Mobile<br /><span className="text-primary">World.</span></h1>
+            <p className="mt-5 text-xl font-semibold">Fix it. Hear it. Love it.</p>
           </Reveal>
           <Reveal delay={260}>
             <p className="mt-7 max-w-md text-lg text-muted-foreground">
@@ -144,6 +142,10 @@ function Index() {
           <p className="text-sm uppercase tracking-[0.25em] text-accent">Repair</p>
           <h2 className="mt-3 text-4xl font-black sm:text-6xl">What we fix</h2>
         </Reveal>
+        <div className="mt-10 grid items-center gap-8 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+          <LazyProductVisual kind="repair" className="repair-phone-scene" />
+          <p className="max-w-sm text-muted-foreground">From the glass to the smallest connection. Carefully opened, repaired and put back together.</p>
+        </div>
         <div className="mt-12">
           {services.map(([n, t, d], i) => (
             <Reveal key={n} dir={i % 2 ? "right" : "left"}>
@@ -156,6 +158,8 @@ function Index() {
           ))}
         </div>
       </section>
+
+      <RepairComparison />
 
       {/* Shop: everything in stock, laid out so it all shows */}
       <section id="audio" className="py-24">
@@ -170,6 +174,7 @@ function Index() {
             </p>
           </Reveal>
 
+          <LazyProductVisual kind="headphones" className="audio-product-scene" />
           <ShopGrid items={audio} />
 
           <Reveal dir="y" className="mt-20">
