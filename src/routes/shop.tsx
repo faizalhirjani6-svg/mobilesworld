@@ -1,19 +1,10 @@
-import { useEffect, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Minus, Plus } from "lucide-react";
 import { Header, Footer, Reveal } from "@/components/site";
 import { ShopCartSheet } from "@/components/shop-cart-sheet";
 import { Button } from "@/components/ui/button";
-import { ProductTilt } from "@/components/product-tilt";
-import headphonesPhoto from "@/assets/headphones.jpg";
-import earbudsPhoto from "@/assets/earbuds-hand-real.jpg";
-import powerBankPhoto from "@/assets/power-bank.jpg";
-import wiredPhoto from "@/assets/wired.jpg";
-import neckbandPhoto from "@/assets/neckband.jpg";
-import speakerPhoto from "@/assets/bluetooth-speaker.jpg";
-import chargerPhoto from "@/assets/charging-cable.jpg";
-import watchPhoto from "@/assets/smartwatch.jpg";
 import { useCart } from "@/hooks/use-cart";
+import { useTilt } from "@/hooks/use-tilt";
 import { playAddToCartSound, playRemoveFromCartSound } from "@/lib/cart-sound";
 import { SHOP_PRODUCTS, formatPrice, type ShopProduct } from "@/lib/shop-products";
 
@@ -31,67 +22,73 @@ export const Route = createFileRoute("/shop")({
   component: ShopPage,
 });
 
-/** Sends a small glowing dot arcing from the product card into the cart button. */
-const productPhotos = [earbudsPhoto, headphonesPhoto, powerBankPhoto, wiredPhoto, neckbandPhoto, speakerPhoto, chargerPhoto, watchPhoto];
-function flyToCart(card: HTMLElement) {
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const target = document.querySelector<HTMLElement>("[data-cart-trigger]");
-  if (!target) return;
-
-  const from = card.getBoundingClientRect();
-  const to = target.getBoundingClientRect();
-  const startX = from.left + from.width / 2;
-  const startY = from.top + from.height * 0.3;
-  const endX = to.left + to.width / 2;
-  const endY = to.top + to.height / 2;
-
-  const dot = document.createElement("span");
-  dot.className = "fly-dot";
-  dot.style.left = `${startX - 7}px`;
-  dot.style.top = `${startY - 7}px`;
-  document.body.appendChild(dot);
-
-  const dx = endX - startX;
-  const dy = endY - startY;
-  const flight = dot.animate(
-    [
-      { transform: "translate(0, 0) scale(1)", opacity: 1 },
-      { transform: `translate(${dx * 0.55}px, ${dy * 0.55 - 90}px) scale(0.9)`, offset: 0.55 },
-      { transform: `translate(${dx}px, ${dy}px) scale(0.25)`, opacity: 0.2 },
-    ],
-    { duration: 650, easing: "cubic-bezier(.3, .7, .4, 1)" },
+function ProductCard({
+  product,
+  quantity,
+  onAdd,
+  onRemove,
+}: {
+  product: ShopProduct;
+  quantity: number;
+  onAdd: () => void;
+  onRemove: () => void;
+}) {
+  const tilt = useTilt(8);
+  return (
+    <div className="tilt-card flex w-full" ref={tilt.ref} onMouseMove={tilt.onMove} onMouseLeave={tilt.onLeave} style={tilt.style}>
+      <article className="flex w-full flex-col overflow-hidden rounded-lg border bg-card text-card-foreground transition-shadow duration-300 hover:shadow-lg">
+        <div className="skeleton aspect-square w-full" aria-hidden />
+        <div className="tilt-pop flex flex-1 flex-col gap-3 p-4">
+          <h2 className="line-clamp-2 min-h-[2.5rem] text-sm font-semibold sm:text-base">{product.name}</h2>
+          <p className="mt-auto text-sm font-bold text-primary">{formatPrice(product.price)}</p>
+          {quantity === 0 ? (
+            <Button className="w-full" onClick={onAdd}>
+              Add to cart
+            </Button>
+          ) : (
+            <div className="flex items-center justify-between rounded-md border border-blue-600 bg-blue-600 text-white transition-colors duration-300">
+              <Button
+                size="icon"
+                variant="ghost"
+                className="text-white hover:bg-white/20 hover:text-white"
+                aria-label={`Remove one ${product.name} from cart`}
+                onClick={onRemove}
+              >
+                <Minus className="h-4 w-4" aria-hidden />
+              </Button>
+              <span key={quantity} className="count-pop text-sm font-semibold" aria-live="polite">
+                In cart: {quantity}
+              </span>
+              <Button
+                size="icon"
+                variant="ghost"
+                className="text-white hover:bg-white/20 hover:text-white"
+                aria-label={`Add one more ${product.name} to cart`}
+                onClick={onAdd}
+              >
+                <Plus className="h-4 w-4" aria-hidden />
+              </Button>
+            </div>
+          )}
+        </div>
+      </article>
+    </div>
   );
-  flight.onfinish = () => {
-    dot.remove();
-    target.classList.remove("cart-pop");
-    void target.offsetWidth;
-    target.classList.add("cart-pop");
-    target.addEventListener("animationend", () => target.classList.remove("cart-pop"), { once: true });
-  };
 }
 
 function ShopPage() {
   const { lines, add, setQuantity, itemCount, subtotal } = useCart();
   const quantities = new Map(lines.map((line) => [line.product.id, line.quantity]));
-  const [justAdded, setJustAdded] = useState<string | null>(null);
-  const addedTimer = useRef<number | undefined>(undefined);
 
-  useEffect(() => () => window.clearTimeout(addedTimer.current), []);
-
-  const addToCart = (product: ShopProduct, origin?: HTMLElement | null) => {
+  const addToCart = (product: ShopProduct) => {
     add(product);
     playAddToCartSound();
-    setJustAdded(product.id);
-    window.clearTimeout(addedTimer.current);
-    addedTimer.current = window.setTimeout(() => setJustAdded(null), 750);
-    const card = origin?.closest("article");
-    if (card instanceof HTMLElement) flyToCart(card);
   };
 
   return (
     <div className="min-h-screen">
       <Header />
-      <main className="mx-auto max-w-6xl px-3 py-16 sm:px-5">
+      <main className="mx-auto max-w-6xl px-5 py-16">
         <Reveal dir="up">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
@@ -106,65 +103,21 @@ function ShopPage() {
             />
           </div>
         </Reveal>
-        <ul className="mt-10 grid grid-cols-2 gap-2.5 sm:gap-6 lg:grid-cols-4">
+        <ul className="mt-10 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
           {SHOP_PRODUCTS.map((product, i) => {
             const quantity = quantities.get(product.id) ?? 0;
             return (
               <li key={product.id} className="flex">
                 <Reveal dir="y" delay={i * 60} className="flex w-full">
-                  <ProductTilt className="w-full">
-                  <article
-                    className={`flex aspect-[4/5] w-full flex-col overflow-hidden rounded-lg border bg-card text-card-foreground transition-shadow duration-300 hover:-translate-y-1 hover:shadow-md ${
-                      justAdded === product.id ? "card-added" : ""
-                    }`}
-                  >
-                    <div className="relative min-h-0 w-full flex-1 overflow-hidden">
-                      <img src={productPhotos[i]} alt={`${product.name} category illustration`} className="h-full w-full object-cover" loading="lazy" decoding="async" />
-                      <span className="product-photo-label">Illustrative photo</span>
-                    </div>
-                    <div className="flex flex-col gap-1.5 p-2.5 sm:gap-2.5 sm:p-4">
-                      <h2 className="truncate text-sm font-semibold sm:min-h-[2.5rem] sm:line-clamp-2 sm:text-base">
-                        {product.name}
-                      </h2>
-                      <p className="text-sm font-bold text-primary">{formatPrice(product.price)}</p>
-                      {quantity === 0 ? (
-                        <Button
-                          className="h-9 w-full text-sm"
-                          onClick={(e) => addToCart(product, e.currentTarget)}
-                        >
-                          Add to cart
-                        </Button>
-                      ) : (
-                        <div className="flex items-center justify-between rounded-md border border-primary bg-primary text-primary-foreground transition-colors duration-300">
-                          <Button
-                            size="icon"
-                            variant="ghost"
-                            className="text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
-                            aria-label={`Remove one ${product.name} from cart`}
-                            onClick={() => {
-                              setQuantity(product.id, quantity - 1);
-                              playRemoveFromCartSound();
-                            }}
-                          >
-                            <Minus className="h-4 w-4" aria-hidden />
-                          </Button>
-                          <span key={quantity} className="count-pop text-sm font-semibold" aria-live="polite">
-                            In cart: {quantity}
-                          </span>
-                          <Button
-                            size="icon"
-                            variant="ghost"
-                            className="text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
-                            aria-label={`Add one more ${product.name} to cart`}
-                            onClick={(e) => addToCart(product, e.currentTarget)}
-                          >
-                            <Plus className="h-4 w-4" aria-hidden />
-                          </Button>
-                        </div>
-                      )}
-                    </div>
-                  </article>
-                  </ProductTilt>
+                  <ProductCard
+                    product={product}
+                    quantity={quantity}
+                    onAdd={() => addToCart(product)}
+                    onRemove={() => {
+                      setQuantity(product.id, quantity - 1);
+                      playRemoveFromCartSound();
+                    }}
+                  />
                 </Reveal>
               </li>
             );

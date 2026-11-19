@@ -1,11 +1,14 @@
+import phoneFront from "@/assets/phone-front.png";
+import phoneBack from "@/assets/phone-back.png";
+import type { CSSProperties } from "react";
 import type { ReactNode } from "react";
+import { useEffect, useRef } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Header, Footer, Reveal, Photo, ScrollProgress, GlideLink } from "@/components/site";
 import { ShopPhotoStrip } from "@/components/shop-photo-strip";
-import { LogoSlamIntro } from "@/components/logo-slam-intro";
-import { LazyProductVisual } from "@/components/lazy-product-visual";
-import { RepairComparison } from "@/components/repair-comparison";
-import { Reviews } from "@/components/reviews";
+import { BeforeAfter } from "@/components/before-after";
+import { Testimonials } from "@/components/testimonials";
+import { FloatingHeadphones } from "@/components/floating-headphones";
 import shopShelves from "@/assets/shop-shelves-enhanced.jpg";
 import shopChargers from "@/assets/shop-chargers-enhanced.jpg";
 import shopStickers from "@/assets/shop-stickers-enhanced.jpg";
@@ -94,23 +97,67 @@ const steps = [
 const brands = ["Apple", "Samsung", "OnePlus", "Xiaomi", "Vivo", "Oppo", "Realme", "Google Pixel", "Motorola", "Nothing"];
 
 function Index() {
+  const phoneStage = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const stage = phoneStage.current;
+    if (!stage) return;
+    let visible = true;
+    const update = () => stage.toggleAttribute("data-motion-paused", !visible || document.hidden);
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = entry?.isIntersecting ?? false;
+      update();
+    });
+    observer.observe(stage);
+    document.addEventListener("visibilitychange", update);
+    return () => {
+      observer.disconnect();
+      document.removeEventListener("visibilitychange", update);
+    };
+  }, []);
   return (
     <div className="min-h-screen overflow-x-clip">
-      <LogoSlamIntro />
       <ScrollProgress />
       <Header />
 
 
-      {/* Opening content follows the logo impact */}
+      {/* Opening text over the decorative phone animation */}
       <section className="opening-section relative isolate overflow-hidden">
-        <LazyProductVisual kind="phone" className="opening-phone-scene" />
+      <div ref={phoneStage} aria-hidden="true" className="stage3d hero-phone-background">
+        <div className="stage3d-grid" />
+        <div className="p3-shadow" />
+        <div className="stage3d-track"><div className="p3-lift">
+          <div className="phone3d">
+            <div className="p3-slice" style={{ "--z": "-4px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "-3px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "-2px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "-1px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "0px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "1px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "2px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "3px" } as CSSProperties} /><div className="p3-slice" style={{ "--z": "4px" } as CSSProperties} />
+            <div className="p3-board"><span className="p3-chip" /><span className="p3-batt" /><span className="p3-camera" /><span className="p3-connector" /></div>
+            <div className="p3-front">
+              <img src={phoneFront} alt="" width={576} height={1168} />
+              <div className="p3-wall">
+                <div className="p3-mark" aria-hidden="true">
+                  <div className="p3-emblem"><span>MW</span><i /></div>
+                  <div className="p3-wordmark"><span>MOBILE</span><span>WORLD</span></div>
+                  <div className="p3-mark-line" />
+                </div>
+              </div>
+              <span className="p3-glare" />
+            </div>
+            <div className="p3-back"><img src={phoneBack} alt="" width={576} height={1168} /></div>
+          </div>
+          <div className="p3-halo"><span /><span /></div>
+        </div></div>
+        <div className="stage3d-orbit"><span /><span /><span /></div>
+      </div>
         <div className="opening-content relative z-10 mx-auto flex max-w-6xl flex-col justify-end px-5 pb-12 pt-12 sm:pb-16">
           <Reveal>
-            <p className="text-sm font-semibold uppercase text-primary">Repairs and audio</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-primary">Repairs and audio</p>
           </Reveal>
           <Reveal delay={120}>
-            <h1 className="mt-5 text-5xl font-black leading-[1.08] sm:text-7xl">Mobile<br /><span className="text-primary">World.</span></h1>
-            <p className="mt-5 text-xl font-semibold">Fix it. Hear it. Love it.</p>
+            <h1 className="mt-5 text-5xl font-black leading-[0.95] sm:text-8xl">
+              Fix it.
+              <br />
+              <span className="font-serif font-normal italic text-accent">Hear it.</span>
+              <br />
+              <span className="text-primary">Love it.</span>
+            </h1>
           </Reveal>
           <Reveal delay={260}>
             <p className="mt-7 max-w-md text-lg text-muted-foreground">
@@ -143,10 +190,6 @@ function Index() {
           <p className="text-sm uppercase tracking-[0.25em] text-accent">Repair</p>
           <h2 className="mt-3 text-4xl font-black sm:text-6xl">What we fix</h2>
         </Reveal>
-        <div className="mt-10 grid items-center gap-8 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-          <LazyProductVisual kind="repair" className="repair-phone-scene" />
-          <p className="max-w-sm text-muted-foreground">From the glass to the smallest connection. Carefully opened, repaired and put back together.</p>
-        </div>
         <div className="mt-12">
           {services.map(([n, t, d], i) => (
             <Reveal key={n} dir={i % 2 ? "right" : "left"}>
@@ -159,8 +202,6 @@ function Index() {
           ))}
         </div>
       </section>
-
-      <RepairComparison />
 
       {/* Shop: everything in stock, laid out so it all shows */}
       <section id="audio" className="py-24">
@@ -175,7 +216,10 @@ function Index() {
             </p>
           </Reveal>
 
-          <LazyProductVisual kind="headphones" className="audio-product-scene" />
+          <Reveal dir="y" delay={200} className="mt-10">
+            <FloatingHeadphones />
+          </Reveal>
+
           <ShopGrid items={audio} />
 
           <Reveal dir="y" className="mt-20">
@@ -196,6 +240,9 @@ function Index() {
           </Reveal>
         </div>
       </section>
+
+      {/* Our work: before/after repair comparisons */}
+      <BeforeAfter />
 
       {/* Inside the shop */}
       <section id="shop-gallery" className="py-24">
@@ -225,8 +272,6 @@ function Index() {
         </ShopPhotoStrip>
       </section>
 
-      <Reviews />
-
       {/* Process: big numbers, open layout */}
       <section id="process" className="bg-accent text-accent-foreground">
         <div className="mx-auto max-w-6xl px-5 py-24">
@@ -248,6 +293,9 @@ function Index() {
           </ol>
         </div>
       </section>
+
+      {/* Reviews */}
+      <Testimonials />
 
       {/* Visit */}
       <section id="visit">
