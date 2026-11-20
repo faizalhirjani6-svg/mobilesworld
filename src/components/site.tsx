@@ -39,6 +39,11 @@ function reducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
+export function signalIntroComplete() {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(new CustomEvent("mw-intro-complete"));
+}
+
 /* ---------- glide hook: enters and exits on every crossing ---------- */
 function useGlide(ref: RefObject<HTMLElement | null>, vertical: boolean, distance = 56) {
   useEffect(() => {

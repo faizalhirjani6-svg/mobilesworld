@@ -100,7 +100,7 @@ function drawPhoneScreen(ctx: CanvasRenderingContext2D) {
     ctx.fillStyle = 'rgba(0,0,0,0.22)';
     rr(ctx, x + 1, y + 2, is, is, 8); ctx.fill();
     // Icon base
-    ctx.fillStyle = apps[i];
+    ctx.fillStyle = apps[i] ?? apps[0] ?? 'transparent';
     rr(ctx, x, y, is, is, 8); ctx.fill();
     // Gloss gradient
     const g = ctx.createLinearGradient(x, y, x, y + is);
@@ -119,7 +119,7 @@ function drawPhoneScreen(ctx: CanvasRenderingContext2D) {
   const dx = (W - (4 * ds + 3 * dg)) / 2;
   for (let i = 0; i < 4; i++) {
     const x = dx + i * (ds + dg);
-    ctx.fillStyle = dock[i];
+    ctx.fillStyle = dock[i] ?? dock[0] ?? 'transparent';
     rr(ctx, x, 434, ds, ds, 10); ctx.fill();
     const g = ctx.createLinearGradient(x, 434, x, 434 + ds);
     g.addColorStop(0, 'rgba(255,255,255,0.25)');
