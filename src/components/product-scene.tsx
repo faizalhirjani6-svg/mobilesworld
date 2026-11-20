@@ -147,7 +147,7 @@ function Model({ kind, policy }: Props) {
       if (!context) return new Color();
       context.fillStyle = styles.getPropertyValue(`--${name}`).trim() || styles.getPropertyValue('--foreground').trim();
       context.fillRect(0, 0, 1, 1);
-      const [r, g, b] = context.getImageData(0, 0, 1, 1).data;
+      const [r = 0, g = 0, b = 0] = context.getImageData(0, 0, 1, 1).data;
       return new Color().setRGB(r / 255, g / 255, b / 255, SRGBColorSpace);
     };
     const parts: { object: Group | Mesh; z: number; name: string }[] = [];
