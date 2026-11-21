@@ -15,12 +15,16 @@ export function LogoSlamIntro() {
       sessionStorage.setItem("mw-logo-slam-played", "1");
     } catch { /* The opening also works without browser storage. */ }
     setPlaying(true);
+    // Safety net: if the slam animation's end event never fires (some embedded
+    // preview browsers suppress animation events), end the intro on schedule.
+    const fallback = window.setTimeout(() => setFading(true), 5400);
     const visibility = () => setPaused(document.hidden);
     const preference = () => { if (motion.matches) skip(); };
     visibility();
     document.addEventListener("visibilitychange", visibility);
     motion.addEventListener("change", preference);
     return () => {
+      window.clearTimeout(fallback);
       document.removeEventListener("visibilitychange", visibility);
       motion.removeEventListener("change", preference);
     };
@@ -59,7 +63,7 @@ export function LogoSlamIntro() {
               <path className="logo-emblem-inset" d="M43 22H63M158 43V67M117 158H137M22 113V137" strokeWidth="3" />
               <path className="logo-emblem-depth" d="M39 115V58H51L74 86L97 58H109V115H95V82L74 107L53 82V115ZM83 123L65 67H80L91 102L103 80L115 102L126 67H141L123 123H110L103 109L96 123Z" transform="translate(0 5)" />
               <path className="logo-emblem-m" d="M35 110V53H47L70 81L93 53H105V110H91V77L70 102L49 77V110Z" />
-              <path className="logo-emblem-w" d="M83 118L65 62H80L91 97L103 75L115 97L126 62H141L123 118H110L103 104L96 118Z" />
+              <path className="logo-emblem-w" d="M83 118L65 62H80L91 97L103 75L115 97L126 62H141L123 118H110L103 104L96 123Z" transform="translate(0 5)" />
               <path className="logo-emblem-detail" d="M57 139H123M79 13L90 24L101 13" strokeWidth="2" />
             </svg>
             <div className="logo-emblem-sheen" />
