@@ -48,7 +48,17 @@ export function ShopCartSheet({
             <ul className="mt-6 flex-1 divide-y overflow-y-auto">
               {lines.map(({ product, quantity }) => (
                 <li key={product.id} className="flex items-center gap-4 py-4">
-                  <div className="skeleton h-14 w-14 shrink-0 rounded-md" aria-hidden />
+                  {product.image ? (
+                    <img
+                      src={product.image}
+                      alt=""
+                      width={56}
+                      height={56}
+                      className="h-14 w-14 shrink-0 rounded-md bg-muted object-cover"
+                    />
+                  ) : (
+                    <div className="skeleton h-14 w-14 shrink-0 rounded-md" aria-hidden />
+                  )}
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-semibold">{product.name}</p>
                     <p className="text-sm text-muted-foreground">{formatPrice(product.price)}</p>

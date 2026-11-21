@@ -35,9 +35,26 @@ function ProductCard({
   return (
     <div className="flex w-full">
       <article className="flex w-full flex-col overflow-hidden rounded-lg border bg-card text-card-foreground transition-shadow duration-300 hover:shadow-lg">
-        <div className="skeleton aspect-square w-full" aria-hidden />
+        {product.image ? (
+          <div className="aspect-square w-full overflow-hidden bg-muted">
+            <img
+              src={product.image}
+              alt={product.name}
+              loading="lazy"
+              decoding="async"
+              width={810}
+              height={1080}
+              className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
+            />
+          </div>
+        ) : (
+          <div className="skeleton aspect-square w-full" aria-hidden />
+        )}
         <div className="flex flex-1 flex-col gap-3 p-4">
           <h2 className="line-clamp-2 min-h-[2.5rem] text-sm font-semibold sm:text-base">{product.name}</h2>
+          {product.detail ? (
+            <p className="-mt-1 line-clamp-1 text-xs text-muted-foreground">{product.detail}</p>
+          ) : null}
           <p className="mt-auto text-sm font-bold text-primary">{formatPrice(product.price)}</p>
           {quantity === 0 ? (
             <Button className="w-full" onClick={onAdd}>
