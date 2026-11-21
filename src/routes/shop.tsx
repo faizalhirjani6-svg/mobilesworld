@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Minus, Plus } from "lucide-react";
 import { Header, Footer, Reveal } from "@/components/site";
+import { CounterCollection } from "@/components/counter-collection";
 import { ShopCartSheet } from "@/components/shop-cart-sheet";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
@@ -101,6 +102,8 @@ function ShopPage() {
             />
           </div>
         </Reveal>
+        <CounterCollection />
+        <h2 className="text-3xl font-black">More accessories</h2>
         <ul className="mt-10 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
           {SHOP_PRODUCTS.map((product, i) => {
             const quantity = quantities.get(product.id) ?? 0;

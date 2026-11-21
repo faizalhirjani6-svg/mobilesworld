@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import { useEffect, useRef } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Header, Footer, Reveal, Photo, ScrollProgress, GlideLink } from "@/components/site";
+import { CounterCollection } from "@/components/counter-collection";
 import { ShopPhotoStrip } from "@/components/shop-photo-strip";
 import shopShelves from "@/assets/shop-shelves-enhanced.jpg";
 import shopChargers from "@/assets/shop-chargers-enhanced.jpg";
@@ -213,6 +214,8 @@ function Index() {
             </p>
           </Reveal>
 
+          <CounterCollection />
+          <h3 className="text-3xl font-black sm:text-5xl">More audio & accessories</h3>
           <ShopGrid items={audio} />
 
           <Reveal dir="y" className="mt-20">
