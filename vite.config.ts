@@ -8,7 +8,13 @@ import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 export default defineConfig({
   ...(process.env['NETLIFY'] === "true" ? { nitro: { preset: "netlify" } } : {}),
-  vite: { build: { sourcemap: false } },
+  vite: {
+    build: { sourcemap: false },
+    server: { allowedHosts: [
+        "sb-1o2cgg0wnimg.vercel.run",
+        "workspace-obcvo1os-6ec43a927b06fe61.v0.build",
+      ] },
+  },
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
