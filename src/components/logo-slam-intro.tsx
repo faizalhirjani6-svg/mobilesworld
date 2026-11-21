@@ -1,47 +1,61 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { signalIntroComplete } from "@/components/site";
 
-export function LogoSlamIntro() {
-  const [playing, setPlaying] = useState(false);
-  const [paused, setPaused] = useState(false);
-  const [fading, setFading] = useState(false);
+export const LOGO_SLAM_KEY = "mw-logo-slam-played";
+const SLAM_DURATION = 3600;
+const FADE_DURATION = 500;
 
-  useEffect(() => {
-    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const skip = () => { setPlaying(false); signalIntroComplete(); };
-    if (motion.matches) { skip(); return; }
+type Phase = "cover" | "playing" | "fading" | "done";
+
+export function LogoSlamIntro() {
+  // Start as a static cover so the server-rendered page never flashes before the slam.
+  const [phase, setPhase] = useState<Phase>("cover");
+  const [paused, setPaused] = useState(false);
+
+  useLayoutEffect(() => {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let seen = false;
     try {
-      if (sessionStorage.getItem("mw-logo-slam-played") === "1") { skip(); return; }
-      sessionStorage.setItem("mw-logo-slam-played", "1");
+      seen = sessionStorage.getItem(LOGO_SLAM_KEY) === "1";
+      if (!seen && !reduced) sessionStorage.setItem(LOGO_SLAM_KEY, "1");
     } catch { /* The opening also works without browser storage. */ }
-    setPlaying(true);
-    // Safety net: if the slam animation's end event never fires (some embedded
-    // preview browsers suppress animation events), end the intro on schedule.
-    const fallback = window.setTimeout(() => setFading(true), 5400);
-    const visibility = () => setPaused(document.hidden);
-    const preference = () => { if (motion.matches) skip(); };
-    visibility();
-    document.addEventListener("visibilitychange", visibility);
-    motion.addEventListener("change", preference);
-    return () => {
-      window.clearTimeout(fallback);
-      document.removeEventListener("visibilitychange", visibility);
-      motion.removeEventListener("change", preference);
-    };
+    if (seen || reduced) {
+      setPhase("done");
+      signalIntroComplete();
+      return;
+    }
+    setPhase("playing");
   }, []);
 
   useEffect(() => {
-    if (!fading) return;
-    const timer = window.setTimeout(() => {
-      setPlaying(false);
-      signalIntroComplete();
-    }, 600);
-    return () => window.clearTimeout(timer);
-  }, [fading]);
+    if (phase !== "playing") return;
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    // Some embedded preview browsers suppress animation events, so end on schedule too.
+    const fallback = window.setTimeout(() => setPhase("fading"), SLAM_DURATION + 300);
+    const visibility = () => setPaused(document.hidden);
+    const preference = () => { if (motion.matches) setPhase("fading"); };
+    visibility();
+    document.addEventListener("visibilitychange", visibility);
+    motion.addEventListener?.("change", preference);
+    return () => {
+      window.clearTimeout(fallback);
+      document.removeEventListener("visibilitychange", visibility);
+      motion.removeEventListener?.("change", preference);
+    };
+  }, [phase]);
 
-  if (!playing) return null;
+  useEffect(() => {
+    if (phase !== "fading") return;
+    const timer = window.setTimeout(() => {
+      setPhase("done");
+      signalIntroComplete();
+    }, FADE_DURATION);
+    return () => window.clearTimeout(timer);
+  }, [phase]);
+
+  if (phase === "done") return null;
   return (
-    <div className={`logo-slam-intro${fading ? " is-fading" : ""}${paused ? " is-paused" : ""}`} aria-hidden="true">
+    <div className={`logo-slam-intro is-${phase}${paused ? " is-paused" : ""}`} aria-hidden="true">
       <div className="logo-slam-stage">
         <div className="logo-impact-ring" />
         <div className="logo-impact-ring logo-impact-ring-secondary" />
@@ -55,15 +69,15 @@ export function LogoSlamIntro() {
         </svg>
         <div className="logo-impact-flash" />
         <div className="logo-slam-mark" onAnimationEnd={(event) => {
-          if (event.target === event.currentTarget) setFading(true);
+          if (event.target === event.currentTarget && phase === "playing") setPhase("fading");
         }}>
           <div className="logo-slam-badge">
             <svg className="logo-slam-emblem" viewBox="0 0 180 180" fill="none">
               <path className="logo-emblem-frame" d="M113 12H142L168 38V142L142 168H38L12 142V38L38 12H67" strokeWidth="2" />
               <path className="logo-emblem-inset" d="M43 22H63M158 43V67M117 158H137M22 113V137" strokeWidth="3" />
-              <path className="logo-emblem-depth" d="M39 115V58H51L74 86L97 58H109V115H95V82L74 107L53 82V115ZM83 123L65 67H80L91 102L103 80L115 102L126 67H141L123 123H110L103 109L96 123Z" transform="translate(0 5)" />
+              <path className="logo-emblem-depth" d="M39 115V58H51L74 86L97 58H109V115H95V82L74 107L53 82V115ZM87 128L69 72H84L95 107L107 85L119 107L130 72H145L127 128H114L107 114L100 128Z" />
               <path className="logo-emblem-m" d="M35 110V53H47L70 81L93 53H105V110H91V77L70 102L49 77V110Z" />
-              <path className="logo-emblem-w" d="M83 118L65 62H80L91 97L103 75L115 97L126 62H141L123 118H110L103 104L96 123Z" transform="translate(0 5)" />
+              <path className="logo-emblem-w" d="M83 123L65 67H80L91 102L103 80L115 102L126 67H141L123 123H110L103 109L96 123Z" />
               <path className="logo-emblem-detail" d="M57 139H123M79 13L90 24L101 13" strokeWidth="2" />
             </svg>
             <div className="logo-emblem-sheen" />

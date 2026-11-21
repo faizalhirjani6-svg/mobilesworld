@@ -105,8 +105,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Hide the logo intro before first paint when it already played this session. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              'try{if(sessionStorage.getItem("mw-logo-slam-played")==="1"||matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("mw-slam-skip")}catch(e){}',
+          }}
+        />
         <HeadContent />
       </head>
       <body>
