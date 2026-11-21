@@ -131,15 +131,20 @@
   place-items: center;
   overflow: hidden;
   perspective: 900px;
-  transition: opacity 600ms ease;
+  transition: opacity 500ms ease;
 }
 .logo-slam-intro.is-fading { opacity: 0; }
+.logo-slam-intro.is-cover * { animation-play-state: paused; }
+/* Failsafe: if scripts never run, the static cover still clears itself. */
+.logo-slam-intro.is-cover { animation: logo-cover-failsafe 400ms ease 4s forwards; }
+html.mw-slam-skip .logo-slam-intro.is-cover { display: none; }
+@keyframes logo-cover-failsafe { to { opacity: 0; visibility: hidden; } }
 .logo-slam-stage {
   position: relative;
   width: min(82%, 640px);
   display: grid;
   place-items: center;
-  animation: logo-impact-shake 5s linear both;
+  animation: logo-impact-shake 3.6s linear both;
 }
 .logo-slam-mark {
   position: relative;
@@ -151,7 +156,9 @@
   font-weight: 900;
   line-height: 1.08;
   letter-spacing: 0;
-  animation: logo-slam 5s linear both;
+  animation: logo-slam 3.6s linear both;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
   text-shadow: 1px 2px 0 var(--ext-a), 2px 4px 0 var(--ext-b), 3px 6px 0 var(--background);
 }
 .logo-slam-badge {
@@ -174,7 +181,7 @@
   inset: 0;
   background: var(--logo-sheen);
   transform: translateX(-150%);
-  animation: logo-sheen 5s ease-in-out both;
+  animation: logo-sheen 3.6s ease-in-out both;
 }
 .logo-slam-mobile { font-size: 72px; color: var(--foreground); }
 .logo-slam-world { font-size: 82px; color: var(--primary); }
@@ -185,7 +192,7 @@
   color: var(--logo-impact-line);
   stroke-dasharray: 400;
   stroke-dashoffset: 400;
-  animation: logo-fracture 5s linear both;
+  animation: logo-fracture 3.6s linear both;
 }
 .logo-impact-ring {
   position: absolute;
@@ -193,24 +200,24 @@
   aspect-ratio: 1;
   border: 2px solid var(--primary);
   border-radius: 50%;
-  animation: logo-shockwave 5s linear both;
+  animation: logo-shockwave 3.6s linear both;
 }
 .logo-impact-ring-secondary { border-color: var(--accent); animation-name: logo-shockwave-secondary; }
 .logo-impact-flash {
   position: absolute;
   inset: -100vmax;
   background: var(--foreground);
-  animation: logo-impact-flash 5s linear both;
+  animation: logo-impact-flash 3.6s linear both;
 }
 .logo-slam-intro.is-paused * { animation-play-state: paused; }
 @keyframes logo-slam {
-  0%, 8% { opacity: 0; transform: scale(4.5) rotate(-12deg); filter: blur(18px); animation-timing-function: cubic-bezier(.7, 0, 1, .4); }
-  15% { opacity: 1; transform: scale(2.8) rotate(-6deg); filter: blur(8px); animation-timing-function: cubic-bezier(.76, 0, .9, .5); }
-  21% { opacity: 1; transform: scale(.92) rotate(1deg); filter: blur(0); }
-  25% { transform: scale(1.06) rotate(-.6deg); }
+  0%, 6% { opacity: 0; transform: scale(3.6) rotate(-10deg); animation-timing-function: cubic-bezier(.7, 0, .95, .45); }
+  12% { opacity: 1; transform: scale(2.2) rotate(-5deg); animation-timing-function: cubic-bezier(.6, 0, .9, .5); }
+  21% { opacity: 1; transform: scale(.92) rotate(1deg); }
+  25% { transform: scale(1.05) rotate(-.5deg); }
   30% { transform: scale(.985) rotate(.2deg); }
-  36%, 88% { opacity: 1; transform: scale(1) rotate(0); filter: blur(0); }
-  100% { opacity: 1; transform: scale(1.025) rotate(0); filter: blur(0); }
+  36%, 88% { opacity: 1; transform: scale(1) rotate(0); }
+  100% { opacity: 1; transform: scale(1.02) rotate(0); }
 }
 @keyframes logo-impact-shake {
   0%, 20%, 34%, 100% { transform: translate(0, 0); }

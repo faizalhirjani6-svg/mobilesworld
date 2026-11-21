@@ -6,6 +6,7 @@ import { useEffect, useRef } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Header, Footer, Reveal, Photo, ScrollProgress, GlideLink } from "@/components/site";
 import { ShopPhotoStrip } from "@/components/shop-photo-strip";
+import { LogoSlamIntro } from "@/components/logo-slam-intro";
 import shopShelves from "@/assets/shop-shelves-enhanced.jpg";
 import shopChargers from "@/assets/shop-chargers-enhanced.jpg";
 import shopStickers from "@/assets/shop-stickers-enhanced.jpg";
@@ -113,6 +114,7 @@ function Index() {
   }, []);
   return (
     <div className="min-h-screen overflow-x-clip">
+      <LogoSlamIntro />
       <ScrollProgress />
       <Header />
 
