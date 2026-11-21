@@ -34,21 +34,37 @@ function ProductCard({
 }) {
   return (
     <div className="flex w-full">
-      <article className="flex w-full flex-col overflow-hidden rounded-lg border bg-card text-card-foreground transition-shadow duration-300 hover:shadow-lg">
-        <div className="skeleton aspect-square w-full" aria-hidden />
-        <div className="flex flex-1 flex-col gap-3 p-4">
-          <h2 className="line-clamp-2 min-h-[2.5rem] text-sm font-semibold sm:text-base">{product.name}</h2>
-          <p className="mt-auto text-sm font-bold text-primary">{formatPrice(product.price)}</p>
+      <article className="flex w-full flex-col rounded-2xl border border-white/10 bg-[#0d0f12]/90 p-2 text-card-foreground transition-colors duration-300 hover:border-primary/40">
+        <div className="aspect-square w-full overflow-hidden bg-[#ececec]">
+          <img
+            src={product.image}
+            alt={product.name}
+            width={640}
+            height={640}
+            loading="lazy"
+            decoding="async"
+            className="h-full w-full object-cover"
+          />
+        </div>
+        <div className="flex flex-1 flex-col px-2 pb-3 pt-4">
+          <h2 className="line-clamp-2 font-display text-sm font-bold leading-tight sm:text-base">
+            {product.name}
+          </h2>
+          <p className="mt-2 truncate text-xs text-muted-foreground">{product.specs}</p>
+          <p className="mt-auto pt-4 text-lg font-bold text-primary">{formatPrice(product.price)}</p>
           {quantity === 0 ? (
-            <Button className="w-full" onClick={onAdd}>
+            <Button
+              className="mt-4 w-full rounded-none bg-primary text-primary-foreground hover:bg-primary/90"
+              onClick={onAdd}
+            >
               Add to cart
             </Button>
           ) : (
-            <div className="flex items-center justify-between rounded-md border border-blue-600 bg-blue-600 text-white transition-colors duration-300">
+            <div className="mt-4 flex items-center justify-between bg-primary text-primary-foreground transition-colors duration-300">
               <Button
                 size="icon"
                 variant="ghost"
-                className="text-white hover:bg-white/20 hover:text-white"
+                className="rounded-none text-primary-foreground hover:bg-black/15 hover:text-primary-foreground"
                 aria-label={`Remove one ${product.name} from cart`}
                 onClick={onRemove}
               >
@@ -60,7 +76,7 @@ function ProductCard({
               <Button
                 size="icon"
                 variant="ghost"
-                className="text-white hover:bg-white/20 hover:text-white"
+                className="rounded-none text-primary-foreground hover:bg-black/15 hover:text-primary-foreground"
                 aria-label={`Add one more ${product.name} to cart`}
                 onClick={onAdd}
               >
