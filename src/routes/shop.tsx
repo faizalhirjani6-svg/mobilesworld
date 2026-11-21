@@ -36,15 +36,15 @@ function ProductCard({
     <div className="flex w-full">
       <article className="flex w-full flex-col overflow-hidden rounded-lg border bg-card text-card-foreground transition-shadow duration-300 hover:shadow-lg">
         {product.image ? (
-          <div className="aspect-square w-full overflow-hidden bg-muted">
+          <div className="aspect-square w-full overflow-hidden bg-[radial-gradient(circle_at_50%_35%,#ffffff_0%,#f6f7f9_60%,#eceef2_100%)]">
             <img
               src={product.image}
               alt={product.name}
               loading="lazy"
               decoding="async"
-              width={810}
-              height={1080}
-              className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
+              width={1024}
+              height={1024}
+              className="h-full w-full object-contain mix-blend-multiply transition-transform duration-500 hover:scale-105"
             />
           </div>
         ) : (
